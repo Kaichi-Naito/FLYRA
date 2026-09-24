@@ -50,3 +50,6 @@ admin-tests.html: 10 checks passed with a mock repository (no real credentials).
 
 ## v1.6
 layer-dnd-tests.html: 12 passed (ordering, indicators, cancellation, locks, history, persistence). history-frame-tests.html: 14 passed (numeric/text input undo, dropdown undo, pending input, parent/child controls, photo dragging, removal/restore, project validation).
+
+
+Wheel zoom: wheel-tests.html 10 passed / 0 failed. Direction, line deltas, cursor anchor, 40–300% limits, panel isolation, fit reset, unchanged project/undo. Canvas fit uses outer viewport dimensions to avoid scrollbar-dependent zoom drift.

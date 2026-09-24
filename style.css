@@ -21,3 +21,6 @@
 
 
 .layer-child{display:flex;align-items:center;gap:6px;margin:0 0 5px 18px;padding:4px 5px;border-left:2px solid var(--line);border-radius:4px;background:#fff}.layer-child.selected{background:#e7eee7;border-color:var(--green)}.layer-child .layer-name{min-width:0;text-align:left;flex:1}
+
+
+.canvas-area{place-items:safe center;overscroll-behavior:contain}
