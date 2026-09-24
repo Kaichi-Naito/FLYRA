@@ -27,3 +27,7 @@
 
 
 .layer-row{grid-template-columns:20px minmax(0,1fr) 26px 26px}
+
+/* Manual project palette and fixed background layer. */
+.idea-bar{flex-wrap:wrap}.background-fixed{grid-column:3/5;font-size:9px;color:var(--muted)}.background-row{border-top:1px solid var(--line)}#paletteDialog{width:min(430px,90vw);max-height:85vh}#paletteDialog::backdrop{background:rgba(20,25,22,.18)}#paletteColors{max-height:42vh;overflow:auto;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}.palette-color{display:flex;align-items:center;gap:8px;font-size:12px}.palette-original{width:16px;height:16px;border:1px solid #aaa;border-radius:50%;flex-shrink:0}.palette-color input[type=color]{width:52px;height:38px;padding:3px;margin-left:auto}.palette-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+#paletteDialog{margin:auto 24px auto auto}#paletteDialog::backdrop{backdrop-filter:none}@media(max-width:600px){#paletteDialog{margin:auto}}
