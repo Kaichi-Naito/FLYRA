@@ -37,3 +37,5 @@
 - 16種類の一覧をブラウザで目視確認。画像部分は写真差し替え用のベクター風景です。
 素材取り込み更新：PR #1の12素材と利用者アップロード9画像を含む33点すべてでデコード・Canvas描画・保存・名前復元を確認。JPEGのMIMEとビルド再実行時の重複防止を検証。
 
+## v1.4
+transform-tests.html: 27 passed / 0 failed (four corners at four rotations, live numeric/slider rendering, undo/cancel, handle rotation/resize, center snap). ui-tests.html: 20 passed / 0 failed.
