@@ -26,4 +26,4 @@
 .canvas-area{place-items:safe center;overscroll-behavior:contain}
 
 
-.layer-row{grid-template-columns:20px minmax(0,1fr) 42px 26px 26px}.layer-mirror{font-size:10px;padding:3px 1px;min-width:0}
+.layer-row{grid-template-columns:20px minmax(0,1fr) 26px 26px}

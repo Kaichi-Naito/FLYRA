@@ -4,7 +4,8 @@ const F=window.Flyra,draw=F.drawLayer,validate=F.validate,cache=new Map();
 F.stickerFields=[['stickerTitle','見出し'],['stickerSubtitle','サブタイトル'],['stickerMeta','詳細情報'],['stickerCode','管理番号']];
 F.stickerDefaults={inventory:{stickerTitle:'PHALUX / ARCHIVE',stickerSubtitle:'HANDLE WITH CARE',stickerMeta:'MADE IN: DARKNESS\nMODEL: ORIGINAL SOUND',stickerCode:'FL — 026'},system:{stickerTitle:'EXPERIMENTAL\nVECTOR SYSTEM',stickerSubtitle:'PHALUX / SOUND DIVISION',stickerMeta:'LIMITED EDITION',stickerCode:'TS26 / 001'},equipment:{stickerTitle:'SPECIAL EDITION',stickerSubtitle:'PHALUX / 2026',stickerMeta:'REFERENCE: SOUND\nPART NO: 026',stickerCode:'FL / 001'}};
 for(const d of Object.values(F.stickerDefaults)){for(const [k] of F.stickerFields)d[k]='';d.stickerShowText=false;}
-const layouts={
+F.stickerDefaults.graphic={...Object.fromEntries(F.stickerFields.map(([k])=>[k,''])),stickerShowText:false,stickerTintTarget:'paper'};
+const layouts={graphic:[],
  inventory:[[.08,.215,.83,.065,38],[.08,.29,.83,.035,20],[.08,.70,.59,.07,22],[.08,.79,.59,.025,20]],
  system:[[.08,.2,.83,.25,72],[.08,.09,.8,.05,23],[.08,.49,.64,.055,25],[.12,.9,.75,.04,22]],
  equipment:[[.08,.17,.65,.09,35],[.08,.30,.65,.065,25],[.08,.43,.63,.12,24],[.15,.72,.4,.055,22]]
@@ -25,7 +26,7 @@ F.restoreStickers=async p=>{let changed=false;for(const o of p.layers||[]){if(o.
 F.drawLayer=(ctx,o,images=new Map())=>{
  if(o.type!=='image'||!layouts[o.stickerKind])return draw(ctx,o,images);
  const source=images.get(o.src);if(!source||!o.visible)return;
- const key=o.src+'#sticker:'+JSON.stringify([o.stickerKind,o.stickerColorMode,o.stickerColor,o.stickerColorFinish,o.stickerShowText,...F.stickerFields.map(([k])=>o[k])]);
+ const key=o.src+'#sticker:'+JSON.stringify([o.stickerKind,o.stickerColorMode,o.stickerColor,o.stickerColorFinish,o.stickerTintTarget,o.stickerShowText,...F.stickerFields.map(([k])=>o[k])]);
  let canvas=cache.get(key);
  if(!canvas){canvas=document.createElement('canvas');canvas.width=source.width;canvas.height=source.height;const c=canvas.getContext('2d');
  // Clip generated artwork to its die-cut contour; keep the page outside transparent.
@@ -35,11 +36,11 @@ F.drawLayer=(ctx,o,images=new Map())=>{
  else c.rect(0,0,1,1);c.restore();c.clip();c.drawImage(source,0,0);c.fillStyle='#eeeee8';c.textBaseline='top';
  if(o.stickerColorMode==='color'){
  const tint=document.createElement('canvas');tint.width=canvas.width;tint.height=canvas.height;const tc=tint.getContext('2d');tc.fillStyle=F.paint(tc,{...o,w:canvas.width,h:canvas.height,stickerColor:o.stickerColor||'#303030'},'stickerColor');tc.fillRect(0,0,tint.width,tint.height);const colors=tc.getImageData(0,0,tint.width,tint.height).data,pixels=c.getImageData(0,0,canvas.width,canvas.height),d=pixels.data;
- for(let j=0;j<d.length;j+=4){if(!d[j+3])continue;const v=(d[j]*.2126+d[j+1]*.7152+d[j+2]*.0722)/255,weight=Math.max(0,Math.min(1,(.85-v)/.65));for(let k=0;k<3;k++)d[j+k]=Math.round(d[j+k]*(1-weight)+Math.min(255,colors[j+k]*(.78+v*1.2))*weight);}c.putImageData(pixels,0,0);
+ for(let j=0;j<d.length;j+=4){if(!d[j+3])continue;const v=(d[j]*.2126+d[j+1]*.7152+d[j+2]*.0722)/255,weight=o.stickerTintTarget==='paper'?Math.max(0,Math.min(1,(v-.08)/.25)):Math.max(0,Math.min(1,(.85-v)/.65));for(let k=0;k<3;k++)d[j+k]=Math.round(d[j+k]*(1-weight)+Math.min(255,colors[j+k]*(o.stickerTintTarget==='paper'?(.87+v*.13):(.78+v*1.2)))*weight);}c.putImageData(pixels,0,0);
  }
- if(o.stickerShowText!==false)F.stickerFields.forEach(([field],i)=>{const [x,y,w,h,size]=layouts[o.stickerKind][i],lines=String(o[field]??'').split('\n');let px=size*canvas.width/1000;const set=()=>c.font=`${i===0?700:400} ${px}px monospace`;set();const widest=Math.max(1,...lines.map(s=>c.measureText(s).width));px*=Math.min(1,w*canvas.width/widest,h*canvas.height/(lines.length*px*1.2));set();lines.forEach((line,j)=>c.fillText(line,x*canvas.width,y*canvas.height+j*px*1.2));});
+ if(o.stickerShowText!==false&&layouts[o.stickerKind].length)F.stickerFields.forEach(([field],i)=>{const [x,y,w,h,size]=layouts[o.stickerKind][i],lines=String(o[field]??'').split('\n');let px=size*canvas.width/1000;const set=()=>c.font=`${i===0?700:400} ${px}px monospace`;set();const widest=Math.max(1,...lines.map(s=>c.measureText(s).width));px*=Math.min(1,w*canvas.width/widest,h*canvas.height/(lines.length*px*1.2));set();lines.forEach((line,j)=>c.fillText(line,x*canvas.width,y*canvas.height+j*px*1.2));});
  cache.set(key,canvas);if(cache.size>12)cache.delete(cache.keys().next().value);}
  const mapped=new Map(images);mapped.set(key,canvas);return draw(ctx,{...o,src:key},mapped);
 };
-F.validate=p=>{for(const o of p.layers||[])if(o.stickerKind!==undefined){if(o.type!=='image'||!Object.hasOwn(layouts,o.stickerKind)||F.stickerFields.some(([k])=>typeof o[k]!=='string'||o[k].length>300))throw Error('ステッカーの文字データが不正です');}for(const o of p.layers||[]){if(o.stickerColor!==undefined&&!/^#[0-9a-f]{6}$/i.test(o.stickerColor))throw Error('ステッカー色が不正です');if(o.stickerColorMode!==undefined&&!['original','color'].includes(o.stickerColorMode))throw Error('ステッカー色設定が不正です');if(o.stickerColorFinish!==undefined&&!F.finishes.some(([v])=>v===o.stickerColorFinish))throw Error('ステッカー仕上げが不正です');if(o.stickerShowText!==undefined&&typeof o.stickerShowText!=='boolean')throw Error('文字表示が不正です');}return validate(p);};
+F.validate=p=>{for(const o of p.layers||[])if(o.stickerKind!==undefined){if(o.type!=='image'||!Object.hasOwn(layouts,o.stickerKind)||F.stickerFields.some(([k])=>typeof o[k]!=='string'||o[k].length>300))throw Error('ステッカーの文字データが不正です');}for(const o of p.layers||[]){if(o.stickerTintTarget!==undefined&&!['paper','ink'].includes(o.stickerTintTarget))throw Error('ステッカー配色が不正です');if(o.stickerColor!==undefined&&!/^#[0-9a-f]{6}$/i.test(o.stickerColor))throw Error('ステッカー色が不正です');if(o.stickerColorMode!==undefined&&!['original','color'].includes(o.stickerColorMode))throw Error('ステッカー色設定が不正です');if(o.stickerColorFinish!==undefined&&!F.finishes.some(([v])=>v===o.stickerColorFinish))throw Error('ステッカー仕上げが不正です');if(o.stickerShowText!==undefined&&typeof o.stickerShowText!=='boolean')throw Error('文字表示が不正です');}return validate(p);};
 })();
