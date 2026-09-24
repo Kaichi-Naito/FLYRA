@@ -13,7 +13,7 @@ function renderCategories(){
 }
 function renderAssets(){
  $('assetSettings').replaceChildren();for(const a of assets){const row=node('div');row.className='admin-row';const img=node('img');img.alt=a.name;img.src=pending.get(a.id)?.src||'https://raw.githubusercontent.com/Kaichi-Naito/FLYRA/'+repo.head+'/assets/'+(original.find(x=>x.id===a.id)?.file||a.file).split('/').map(encodeURIComponent).join('/');
- const folder=select([['icons','アイコン'],['textures','テクスチャ'],['logos','ロゴ']],a.folder,v=>{a.folder=v;});folder.setAttribute('aria-label',a.name+' の格納先');
+ const folder=select([['icons','アイコン'],['textures','テクスチャ'],['logos','ロゴ'],['barcodes','バーコード']],a.folder,v=>{a.folder=v;});folder.setAttribute('aria-label',a.name+' の格納先');
  const visible=node('label','素材棚に表示 '),check=node('input');check.type='checkbox';check.checked=!a.hidden;check.onchange=()=>{a.hidden=!check.checked;changed();};visible.append(check);
  const replace=node('input');replace.type='file';replace.accept='image/png,image/jpeg,image/webp';replace.setAttribute('aria-label',a.name+' を差し替え');replace.onchange=async()=>{lock(true);try{await stage(replace.files[0],a);renderAssets();}catch(e){status(e.message);}finally{lock(false);}};
  row.append(img,input(a.name,'素材の表示名',v=>a.name=v),folder,visible,replace,node('small','保存先：assets/'+(a.file||a.folder+'/'+a.id+'.'+pending.get(a.id)?.ext)));$('assetSettings').append(row);}
@@ -26,7 +26,7 @@ async function stage(file,existing){
 $('addCategory').onclick=()=>{config.categories.push({id:'category-'+crypto.randomUUID(),name:'新しいカテゴリ'});changed();renderCategories();};
 $('upload').onchange=async()=>{lock(true);try{for(const f of $('upload').files)await stage(f);renderAssets();}catch(e){status(e.message);}finally{$('upload').value='';lock(false);}};
 $('connect').onclick=async()=>{if(dirty&&!confirm('未保存の変更を破棄して読み直しますか？'))return;const token=$('token').value.trim();$('token').value='';if(!token)return status('GitHubトークンを入力してください');lock(true);try{repo?.disconnect();repo=new FlyraRepository(token);await repo.load();config=structuredClone(repo.config);config.templates ||= {};assets=structuredClone(repo.manifest);original=structuredClone(assets);pending.clear();
- for(const f of repo.files.filter(f=>/^assets\/(icons|textures|logos)\/.+\.(png|jpe?g|webp)$/i.test(f.path))){const file=f.path.slice(7);if(!assets.some(a=>a.file===file))assets.push({id:'import-'+f.sha.slice(0,16)+'-'+assets.length,file,folder:file.split('/')[0],name:file.split('/').pop().replace(/\.[^.]+$/,''),blend:'source-over',opacity:1});}
+ for(const f of repo.files.filter(f=>/^assets\/(icons|textures|logos|barcodes)\/.+\.(png|jpe?g|webp)$/i.test(f.path))){const file=f.path.slice(7);if(!assets.some(a=>a.file===file))assets.push({id:'import-'+f.sha.slice(0,16)+'-'+assets.length,file,folder:file.split('/')[0],name:file.split('/').pop().replace(/\.[^.]+$/,''),blend:'source-over',opacity:1});}
  dirty=assets.length!==original.length;$('changes').textContent=dirty?'未登録の画像を検出しました。保存すると素材棚に追加されます。':'変更はありません';renderCategories();renderAssets();status('接続しました。編集後「変更をGitHubに保存」で公開します。');
  }catch(e){repo?.disconnect();repo=null;status(e.message);}finally{lock(false);}};
 $('disconnect').onclick=()=>{if(dirty&&!confirm('未保存の変更を破棄して切断しますか？'))return;repo?.disconnect();repo=null;dirty=false;pending.clear();$('categories').replaceChildren();$('templateSettings').replaceChildren();$('assetSettings').replaceChildren();status('切断しました');lock(false);};

@@ -99,5 +99,3 @@ F.makeProject=(id='riso',content=F.defaultContent,width=1080,height=1350,seed=20
 };
 function twenty(){return 20;}function thirty(){return 30;}function forty(){return 40;}function fifty(){return 50;}function sixty(){return 60;}function eighty(){return 80;}function ninety(){return 90;}
 })();
-
-

@@ -81,10 +81,10 @@ function seventy(){return 70;}function forty(){return 40;}
 const imageCache=new Map();
 F.loadImage=src=>{if(imageCache.has(src))return imageCache.get(src);const task=new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>{imageCache.delete(src);reject(new Error('画像を読み込めませんでした'));};im.src=src;});imageCache.set(src,task);return task;};
 F.prepare=async p=>{const map=new Map();await Promise.all(p.layers.filter(x=>x.type==='image').map(async o=>map.set(o.src,await F.loadImage(o.src))));return map;};
-function gradient(ctx,o){const rad=(o.angle||0)/180*Math.PI,dx=Math.cos(rad)*o.w/2,dy=Math.sin(rad)*o.h/2;const g=ctx.createLinearGradient(o.w/2-dx,o.h/2-dy,o.w/2+dx,o.h/2+dy);g.addColorStop(0,o.color);g.addColorStop(1,o.color2);return g;}
+function gradient(ctx,o){if(F.paint&&o.colorFinish&&o.colorFinish!=='solid')return F.paint(ctx,o);if(F.paint&&o.color2Finish&&o.color2Finish!=='solid')return F.paint(ctx,o,'color2');const rad=(o.angle||0)/180*Math.PI,dx=Math.cos(rad)*o.w/2,dy=Math.sin(rad)*o.h/2;const g=ctx.createLinearGradient(o.w/2-dx,o.h/2-dy,o.w/2+dx,o.h/2+dy);g.addColorStop(0,o.color);g.addColorStop(1,o.color2);return g;}
 function textLines(ctx,text,max){const out=[];for(const paragraph of String(text).split('\n')){let line='';for(const char of Array.from(paragraph)){if(line&&ctx.measureText(line+char).width>max){out.push(line);line=char;}else line+=char;}out.push(line);}return out;}
 F.drawLayer=(ctx,o,images=new Map())=>{
- if(!o.visible)return;ctx.save();ctx.globalAlpha=o.opacity;ctx.globalCompositeOperation=o.blend||'source-over';ctx.translate(o.x+o.w/2,o.y+o.h/2);ctx.rotate(o.rotation*Math.PI/180);ctx.translate(-o.w/2,-o.h/2);ctx.fillStyle=o.color;ctx.strokeStyle=o.color;ctx.lineWidth=Math.max(1,o.w/350);
+ if(!o.visible)return;ctx.save();ctx.globalAlpha=o.opacity;ctx.globalCompositeOperation=o.blend||'source-over';ctx.translate(o.x+o.w/2,o.y+o.h/2);ctx.rotate(o.rotation*Math.PI/180);ctx.translate(-o.w/2,-o.h/2);ctx.fillStyle=F.paint?F.paint(ctx,o):o.color;ctx.strokeStyle=F.paint?F.paint(ctx,o):o.color;ctx.lineWidth=Math.max(1,o.w/350);
  const w=o.w,h=o.h,rnd=F.random(o.seed||42);
  switch(o.type){
  case 'text':{
@@ -92,7 +92,7 @@ F.drawLayer=(ctx,o,images=new Map())=>{
   const fit=()=>{ctx.font=`${o.fontWeight||400} ${fs}px ${family}`;lines=textLines(ctx,o.text,w);return lines.length*fs*(o.lineHeight||1.1)<=h;};
   let count=0;while(!fit()&&fs>3&&count++<150)fs*=.96;
   ctx.textBaseline='top';ctx.textAlign=o.align||'left';const tx=o.align==='center'?w/2:o.align==='right'?w:0;
-  if(o.shadow){ctx.shadowColor=o.color2;ctx.shadowBlur=0;ctx.shadowOffsetX=fs*.045;ctx.shadowOffsetY=fs*.045;}
+  if(o.shadow&&o.color2Finish&&o.color2Finish!=='solid'&&F.paint){ctx.save();ctx.translate(fs*.045,fs*.045);ctx.fillStyle=ctx.strokeStyle=F.paint(ctx,o,'color2');lines.forEach((line,i)=>{if(o.outline){ctx.lineWidth=Math.max(1,fs*.022);ctx.strokeText(line,tx,i*fs*(o.lineHeight||1.1));}else ctx.fillText(line,tx,i*fs*(o.lineHeight||1.1));});ctx.restore();}else if(o.shadow){ctx.shadowColor=o.color2;ctx.shadowBlur=0;ctx.shadowOffsetX=fs*.045;ctx.shadowOffsetY=fs*.045;}
   lines.forEach((line,i)=>{if(o.outline){ctx.lineWidth=Math.max(1,fs*.022);ctx.strokeText(line,tx,i*fs*(o.lineHeight||1.1));}else ctx.fillText(line,tx,i*fs*(o.lineHeight||1.1));});break;
  }
  case 'rect':ctx.fillRect(0,0,w,h);break;

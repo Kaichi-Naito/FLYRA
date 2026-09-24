@@ -298,5 +298,35 @@
     "blend": "source-over",
     "opacity": 1,
     "sha256": "fa157719e1a0a7cfb2a3705784cef77fe931a59f37b4baec7bda6b412296784d"
+  },
+  {
+    "id": "barcode-inventory",
+    "name": "アーカイブ・バーコード",
+    "folder": "barcodes",
+    "file": "barcodes/inventory.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "stickerKind": "inventory",
+    "sha256": "2c0fe90085bc48a78f630b87bffe8c6e9bb9506d43d914463c5a7186895add5c"
+  },
+  {
+    "id": "barcode-system",
+    "name": "システム・バーコード",
+    "folder": "barcodes",
+    "file": "barcodes/system.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "stickerKind": "system",
+    "sha256": "6c74e2338aaf69cb647dbfcba83176b2fd5498c112a6b89f4d1de2034f156af5"
+  },
+  {
+    "id": "barcode-equipment",
+    "name": "機材管理・バーコード",
+    "folder": "barcodes",
+    "file": "barcodes/equipment.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "stickerKind": "equipment",
+    "sha256": "d2d828bbc6cef673fc84997be2f593ca392232c4c7c0f40137815a91f065d06e"
   }
 ]

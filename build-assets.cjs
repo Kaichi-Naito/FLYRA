@@ -10,12 +10,13 @@ function build(root=__dirname){
   let id='import-'+crypto.createHash('sha256').update(file).digest('hex').slice(0,16);if(ids.has(id))throw Error('Duplicate generated ID: '+file);
   manifest.push({id,name:path.basename(e.name,path.extname(e.name)).slice(0,160),folder,file,blend:'source-over',opacity:1});known.add(file);ids.add(id);
  }}
- for(const folder of ['icons','textures','logos']){fs.mkdirSync(path.join(dir,folder),{recursive:true});scan(folder);}
- const records=manifest.map(a=>{const absolute=path.resolve(dir,a.file),rel=path.relative(dir,absolute);if(rel.startsWith('..')||path.isAbsolute(rel)||!['icons','textures','logos'].includes(a.folder))throw Error('Invalid asset path: '+a.file);
+ for(const folder of ['icons','textures','logos','barcodes']){fs.mkdirSync(path.join(dir,folder),{recursive:true});scan(folder);}
+ const records=manifest.map(a=>{const absolute=path.resolve(dir,a.file),rel=path.relative(dir,absolute);if(rel.startsWith('..')||path.isAbsolute(rel)||!['icons','textures','logos','barcodes'].includes(a.folder))throw Error('Invalid asset path: '+a.file);
   const type=mime[path.extname(a.file).toLowerCase()];if(!type)throw Error('Unsupported image: '+a.file);
   const bytes=fs.readFileSync(absolute);return{...a,sha256:crypto.createHash('sha256').update(bytes).digest('hex'),src:'data:'+type+';base64,'+bytes.toString('base64')};
  });
- const standard=records.filter(a=>a.folder!=='logos');
+ fs.writeFileSync(path.join(dir,'catalog-barcodes.js'),'/* Generated barcode catalog. */\nwindow.FLYRA_ASSETS.push(...'+JSON.stringify(records.filter(a=>a.folder==='barcodes'))+');\n');
+ const standard=records.filter(a=>!['logos','barcodes'].includes(a.folder));
  fs.writeFileSync(path.join(dir,'catalog-logos.js'),'/* Generated logo catalog. */\nwindow.FLYRA_ASSETS.push(...'+JSON.stringify(records.filter(a=>a.folder==='logos'))+');\n');
  fs.writeFileSync(manifestPath,JSON.stringify(manifest,null,2)+'\n');
  fs.writeFileSync(path.join(dir,'catalog.js'),'/* Generated asset catalog. */\nwindow.FLYRA_ASSETS = '+JSON.stringify(standard.slice(0,6))+';\n');
