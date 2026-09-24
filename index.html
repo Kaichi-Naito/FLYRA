@@ -6,7 +6,7 @@
   <title>FLYRA — 小さなデザインスタジオ</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23e95636'/%3E%3Cpath d='M12 10h19v5H17v5h11v5H17v8h-5z' fill='white'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
-  <script defer src="engine.js"></script><script defer src="transforms.js"></script><script defer src="fonts.js"></script><script defer src="effects.js"></script><script defer src="templates.js"></script><script defer src="templates-02.js"></script><script defer src="assets/catalog.js"></script><script defer src="assets/catalog-2.js"></script><script defer src="assets/catalog-3.js"></script><script defer src="asset-names.js"></script><script defer src="preview-select.js"></script><script defer src="site-library.js"></script><script defer src="layer-dnd.js"></script><script defer src="app.js"></script>
+  <script defer src="engine.js"></script><script defer src="transforms.js"></script><script defer src="fonts.js"></script><script defer src="effects.js"></script><script defer src="templates.js"></script><script defer src="templates-02.js"></script><script defer src="assets/catalog.js"></script><script defer src="assets/catalog-2.js"></script><script defer src="assets/catalog-3.js"></script><script defer src="asset-names.js"></script><script defer src="preview-select.js"></script><script defer src="site-library.js"></script><script defer src="layer-dnd.js"></script><script defer src="content-kinds.js"></script><script defer src="app.js"></script>
 </head>
 <body>
   <header class="topbar">
@@ -23,7 +23,7 @@
       <button data-panel="images" class="rail-button"><span>▧</span>画像</button>
       <button data-panel="assets" class="rail-button"><span>▱</span>素材棚</button>
       <button data-panel="materials" class="rail-button"><span>✳</span>素材を作る</button>
-      <div class="rail-bottom"><button id="help" class="rail-button"><span>?</span>使い方</button><span class="rail-version">v1.7</span></div>
+      <div class="rail-bottom"><button id="help" class="rail-button"><span>?</span>使い方</button><span class="rail-version">v1.8</span></div>
     </nav>
     <aside class="library">
       <section id="panel-templates" class="panel active">
@@ -33,13 +33,13 @@
         <div class="small-note">すべて編集できるオリジナルテンプレート。<br>告知内容とロックした要素は引き継ぎます。</div>
       </section>
       <section id="panel-content" class="panel">
-        <div class="eyebrow">MAKE IT YOURS</div><h1>届けたいこと。</h1><p class="muted">ここで入れた内容は、別の案にも引き継がれます。</p>
-        <label>イベント・グッズ名<textarea id="content-title" rows="3" maxlength="120"></textarea></label>
-        <label>キャッチコピー<input id="content-subtitle" maxlength="150"></label>
-        <label>日時・販売開始<input id="content-date" maxlength="100"></label>
-        <label>会場・ショップ<input id="content-venue" maxlength="120"></label>
-        <label>出演者・商品の説明<textarea id="content-details" rows="4" maxlength="600"></textarea></label>
-        <label>料金・チケット<input id="content-price" maxlength="150"></label>
+        <div class="eyebrow">MAKE IT YOURS</div><h1 id="contentHeading">ライブの告知内容</h1><p class="muted"><span id="contentKindNote">同じ種類のデザインに内容を引き継ぎます。ライブとグッズの内容は別々に保持します。</span></p>
+        <label><span data-content-label="title"></span><textarea id="content-title" rows="3" maxlength="120"></textarea></label>
+        <label><span data-content-label="subtitle"></span><input id="content-subtitle" maxlength="150"></label>
+        <label><span data-content-label="date"></span><input id="content-date" maxlength="100"></label>
+        <label><span data-content-label="venue"></span><input id="content-venue" maxlength="120"></label>
+        <label><span data-content-label="details"></span><textarea id="content-details" rows="4" maxlength="600"></textarea></label>
+        <label><span data-content-label="price"></span><input id="content-price" maxlength="150"></label>
         <p class="small-note">内容は入力すると反映されます。長い文章は、文字サイズを自動で調整します。</p>
       </section>
       <section id="panel-elements" class="panel">
@@ -56,7 +56,7 @@
       </section>
       <section id="panel-assets" class="panel">
         <div class="eyebrow">YOUR CREATIVE COLLECTION</div><h1>好きな素材を、少しずつ。</h1><p class="muted">選んで重ねる、自分だけの素材棚。</p>
-        <label>フォルダ<select id="assetFolder"><option value="textures">質感・グラデーション</option><option value="icons">アイコン・装飾</option><option value="mine">自分の素材</option></select></label>
+        <label>フォルダ<select id="assetFolder"><option value="textures">質感・グラデーション</option><option value="icons">アイコン・装飾</option><option value="logos">ロゴ</option><option value="mine">自分の素材</option></select></label>
         <div class="two-cols"><button id="importAssets">素材を登録 ＋</button><button id="importAssetFolder">フォルダを登録</button></div>
         <div id="assetGrid" class="asset-grid"></div>
         <button id="addSelectedAssets" class="primary wide" disabled>選択した素材を追加</button>
