@@ -149,7 +149,8 @@
     "folder": "icons",
     "file": "icons/chrome-liquid-knot-01.png",
     "blend": "source-over",
-    "opacity": 1
+    "opacity": 1,
+    "hidden": true
   },
   {
     "id": "xerox-hand-reach-02",
@@ -157,7 +158,8 @@
     "folder": "icons",
     "file": "icons/xerox-hand-reach-02.png",
     "blend": "source-over",
-    "opacity": 0.95
+    "opacity": 0.95,
+    "hidden": true
   },
   {
     "id": "micro-grain-overlay-01",
