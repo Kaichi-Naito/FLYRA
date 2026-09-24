@@ -410,5 +410,59 @@
     "opacity": 1,
     "stickerKind": "graphic",
     "sha256": "f18f163c79bb4f7c35dbb91c3364fc18558d175efe0025730739c11c14f0fcbf"
+  },
+  {
+    "id": "pixel-stardust-cluster",
+    "name": "モノクロのピクセル星屑クラスター",
+    "folder": "icons",
+    "file": "icons/pixel-stardust-cluster.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "1c99bc4257c90084bd6f9bfb531907e0c7a1fd3c6c8d241ae8184225f00176f3"
+  },
+  {
+    "id": "black-sparkle-circle",
+    "name": "黒い星の円形きらめきフレーム",
+    "folder": "icons",
+    "file": "icons/black-sparkle-circle.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "aee7a332419e3bab77184b408fa3825dfcf7ed49afd0a19d3109a78e00ef307e"
+  },
+  {
+    "id": "chrome-orbit-emblem",
+    "name": "未来感クローム星形エンブレム",
+    "folder": "icons",
+    "file": "icons/chrome-orbit-emblem.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "7e8011bd573d2a7f97f2cf7e3d254a61316a0124985767016ba06d6e7af601e3"
+  },
+  {
+    "id": "iridescent-four-point-star",
+    "name": "虹彩メタル四芒星エンブレム",
+    "folder": "icons",
+    "file": "icons/iridescent-four-point-star.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "c58324f67e0d46f391f4dc1a8397899157d4448ea3dce27e99ce076c5477d41d"
+  },
+  {
+    "id": "silver-safety-pin",
+    "name": "銀色の安全ピン",
+    "folder": "icons",
+    "file": "icons/silver-safety-pin.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "3452863d46d1c32d3fc8f20844f94ec57439c5a411034110c57c1acc39d737f9"
+  },
+  {
+    "id": "gothic-ink-corner",
+    "name": "黒インクのゴシック装飾コーナー枠",
+    "folder": "icons",
+    "file": "icons/gothic-ink-corner.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "899e2d19b7fa24fe47e84aab48e3cedd6a5977d3a29a92932b60cca8d8e68f27"
   }
 ]
