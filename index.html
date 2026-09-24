@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f5f4ef"><meta name="description" content="ライブとグッズのための、小さなデザインスタジオ。テンプレート、おまかせ構成、素材生成、レイヤー編集。">
+  <title>FLYRA — 小さなデザインスタジオ</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23e95636'/%3E%3Cpath d='M12 10h19v5H17v5h11v5H17v8h-5z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="engine.js"></script><script defer src="effects.js"></script><script defer src="templates.js"></script><script defer src="assets/catalog.js"></script><script defer src="app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="FLYRA ホーム">FLYRA<span class="brand-dot">✳</span></a>
+    <span class="brand-note">YOUR LITTLE DESIGN STUDIO</span>
+    <div class="document-title"><input id="projectName" aria-label="プロジェクト名" value="はじめてのフライヤー" maxlength="80"><span id="saveStatus" role="status">この端末に自動保存</span></div>
+    <div class="header-actions"><button id="openProject" class="quiet">開く</button><button id="saveProject" class="quiet">データ保存</button><button id="export" class="primary">書き出す <span>↗</span></button></div>
+  </header>
+  <main class="app-layout">
+    <nav class="toolrail" aria-label="編集ツール">
+      <button data-panel="templates" class="rail-button active"><span>▦</span>デザイン</button>
+      <button data-panel="content" class="rail-button"><span>≡</span>告知内容</button>
+      <button data-panel="elements" class="rail-button"><span>T</span>文字・図形</button>
+      <button data-panel="images" class="rail-button"><span>▧</span>画像</button>
+      <button data-panel="assets" class="rail-button"><span>▱</span>素材棚</button>
+      <button data-panel="materials" class="rail-button"><span>✳</span>素材を作る</button>
+      <div class="rail-bottom"><button id="help" class="rail-button"><span>?</span>使い方</button><span class="rail-version">v1.0</span></div>
+    </nav>
+    <aside class="library">
+      <section id="panel-templates" class="panel active">
+        <div class="eyebrow">START WITH A FEELING</div><h1>どんな空気を、届ける？</h1><p class="muted">好きなデザインから、あなたの一枚へ。</p>
+        <div class="filter-row" role="group" aria-label="テンプレートの種類"><button data-filter="all" class="chip active">すべて</button><button data-filter="live" class="chip">ライブ</button><button data-filter="goods" class="chip">グッズ</button></div>
+        <div id="templateList" class="template-grid"></div>
+        <div class="small-note">すべて編集できるオリジナルテンプレート。<br>告知内容とロックした要素は引き継ぎます。</div>
+      </section>
+      <section id="panel-content" class="panel">
+        <div class="eyebrow">MAKE IT YOURS</div><h1>届けたいこと。</h1><p class="muted">ここで入れた内容は、別の案にも引き継がれます。</p>
+        <label>イベント・グッズ名<textarea id="content-title" rows="3" maxlength="120"></textarea></label>
+        <label>キャッチコピー<input id="content-subtitle" maxlength="150"></label>
+        <label>日時・販売開始<input id="content-date" maxlength="100"></label>
+        <label>会場・ショップ<input id="content-venue" maxlength="120"></label>
+        <label>出演者・商品の説明<textarea id="content-details" rows="4" maxlength="600"></textarea></label>
+        <label>料金・チケット<input id="content-price" maxlength="150"></label>
+        <p class="small-note">内容は入力すると反映されます。長い文章は、文字サイズを自動で調整します。</p>
+      </section>
+      <section id="panel-elements" class="panel">
+        <div class="eyebrow">A LITTLE SOMETHING</div><h1>文字と、かたち。</h1><p class="muted">加えるだけで、自分らしく。</p>
+        <button id="addText" class="wide text-add">T <span>テキストを追加</span> ＋</button>
+        <div class="section-title">図形</div><div class="shape-grid"><button data-shape="rect"><span>■</span>四角</button><button data-shape="ellipse"><span>●</span>円</button><button data-shape="triangle"><span>▲</span>三角</button><button data-shape="star"><span>✦</span>星</button><button data-shape="burst"><span>✺</span>バースト</button><button data-shape="line"><span>―</span>ライン</button><button data-shape="rings"><span>◎</span>リング</button><button data-shape="grid"><span>▦</span>グリッド</button></div>
+        <div class="tip"><b>ちょっとしたコツ</b><p>大きな文字と、小さな文字。サイズに差をつけると、伝えたいことがはっきりします。</p></div>
+      </section>
+      <section id="panel-images" class="panel">
+        <div class="eyebrow">YOUR WORLD, IN FRAME</div><h1>写真を、主役に。</h1><p class="muted">アーティスト写真やグッズの画像を追加。</p>
+        <button id="uploadImage" class="upload-zone"><span>↥</span><b>画像を選ぶ</b><small>PNG / JPEG / WebP（20MB まで）</small></button>
+        <p class="small-note">キャンバスへのドラッグ＆ドロップにも対応。画像はこのブラウザ内で処理します。</p>
+        <div class="tip"><b>透過画像がおすすめ</b><p>背景が透明な PNG なら、グラデーションや図形と自由に組み合わせられます。画像のトリミング・明るさ・コントラストは右側で調整できます。</p></div>
+      </section>
+      <section id="panel-assets" class="panel">
+        <div class="eyebrow">YOUR CREATIVE COLLECTION</div><h1>好きな素材を、少しずつ。</h1><p class="muted">選んで重ねる、自分だけの素材棚。</p>
+        <label>フォルダ<select id="assetFolder"><option value="textures">質感・グラデーション</option><option value="icons">アイコン・装飾</option><option value="mine">自分の素材</option></select></label>
+        <div class="two-cols"><button id="importAssets">素材を登録 ＋</button><button id="importAssetFolder">フォルダを登録</button></div>
+        <div id="assetGrid" class="asset-grid"></div>
+        <button id="addSelectedAssets" class="primary wide" disabled>選択した素材を追加</button>
+        <div class="two-cols"><button id="saveAssetLibrary">素材棚を保存 ↓</button><button id="loadAssetLibrary">素材棚を開く</button></div>
+        <p class="small-note">登録先は現在のフォルダ。複数選択できます。自分で登録した素材はこの端末に保存。移動・バックアップは「素材棚を保存」から。</p>
+        <p class="small-note">質感素材はキャンバス全面、アイコンは小さめに配置。重ね方は右側の「合成モード」で変更できます。</p>
+      </section>
+      <section id="panel-materials" class="panel">
+        <div class="eyebrow">MAKE YOUR OWN TEXTURE</div><h1>素材だって、つくれる。</h1><p class="muted">色と質感を混ぜて、偶然を楽しもう。</p>
+        <div class="material-preview"><canvas id="materialPreview" width="360" height="270" aria-label="生成素材のプレビュー"></canvas></div>
+        <label>素材の種類<select id="materialType"><option value="gradient">グラデーション</option><option value="mesh">オーロラ / メッシュ</option><option value="particles">粒子 / ダスト</option><option value="grain">フィルムグレイン</option><option value="halftone">ハーフトーン</option></select></label>
+        <div class="two-cols"><label>カラー A<input id="materialColor" type="color" value="#fb754d"></label><label>カラー B<input id="materialColor2" type="color" value="#5c67ec"></label></div>
+        <label>角度 <output id="angleValue">135°</output><input id="materialAngle" type="range" min="0" max="360" value="135"></label>
+        <label>粒子の密度 <output id="densityValue">45</output><input id="materialDensity" type="range" min="5" max="100" value="45"></label>
+        <div class="two-cols"><button id="materialReseed">↻ 別のパターン</button><button id="materialDownload">素材 PNG ↓</button></div>
+        <button id="addMaterial" class="primary wide">キャンバスに追加 ＋</button><button id="setBackground" class="wide">背景として使う</button>
+        <p class="small-note">粒子・グレイン・ハーフトーンは透明な背景で生成。追加後も色や密度を変更できます。</p>
+      </section>
+    </aside>
+    <section class="workspace" aria-label="デザインの編集エリア">
+      <div class="workspace-toolbar"><div class="toolbar-left"><button id="undo" title="元に戻す (Ctrl/⌘ Z)" aria-label="元に戻す">↶</button><button id="redo" title="やり直す (Ctrl/⌘ Shift Z)" aria-label="やり直す">↷</button><span class="divider"></span><select id="sizePreset" aria-label="キャンバスのサイズ"><option value="1080,1350">SNS 縦長 · 4:5</option><option value="1080,1080">正方形 · 1:1</option><option value="1080,1920">ストーリー · 9:16</option><option value="1748,2480">A5 · 300dpi 相当</option><option value="2480,3508">A4 · 300dpi 相当</option></select></div><button id="toggleGuides" class="quiet" aria-pressed="false">余白ガイド</button></div>
+      <div id="canvasArea" class="canvas-area"><div id="canvasWrap" class="canvas-wrap"><canvas id="artboard" tabindex="0" aria-label="フライヤー。要素をドラッグして移動、右下のハンドルで拡大縮小。レイヤー一覧からも選択できます。"></canvas><canvas id="overlay" aria-hidden="true"></canvas></div></div>
+      <div class="canvas-caption"><span id="canvasInfo">1080 × 1350 px</span><span>クリックで選択 · ドラッグで移動</span><div><button id="zoomOut" aria-label="縮小">−</button><button id="zoomFit" title="全体を表示">フィット</button><button id="zoomIn" aria-label="拡大">＋</button></div></div>
+      <div class="idea-bar"><div><span class="spark">✳</span><div><b>もうひとつの、可能性。</b><small>告知内容はそのまま。新しい表情を試してみよう。</small></div></div><button id="shufflePalette">配色だけ ↻</button><button id="shuffleLayout">構図だけ ↻</button><button id="randomize" class="dark">おまかせで別案 <span>↗</span></button></div>
+    </section>
+    <aside class="inspector">
+      <div class="inspector-heading"><h2>調整</h2><span id="selectionType" class="tiny-tag">キャンバス</span></div>
+      <div id="properties"></div>
+      <div class="layers-heading"><h2>レイヤー</h2><span id="layerCount"></span></div><p class="layer-note">上にある要素ほど手前に表示</p><div id="layerList"></div>
+      <div class="inspector-footer">DESIGNED BY YOU. <span>✳</span></div>
+    </aside>
+  </main>
+  <dialog id="exportDialog"><form method="dialog"><button class="close" aria-label="閉じる">×</button></form><div class="eyebrow">READY TO GO</div><h2>あなたの一枚を、外へ。</h2><p class="muted">SNS に。お店に。次のライブに。</p><label>形式<select id="exportFormat"><option value="png">PNG — きれいに保存</option><option value="jpeg">JPEG — 軽いファイル</option></select></label><label>出力サイズ<select id="exportScale"><option value="1">標準（1倍）</option><option value="2">高解像度（2倍）</option></select></label><label class="check-label"><input type="checkbox" id="transparentExport">背景を透明にする（PNG）</label><p id="exportDimensions" class="small-note"></p><button id="downloadExport" class="primary wide">画像をダウンロード ↓</button><p class="small-note">RGB 画像として保存します。印刷所に出す場合は、先方の色・塗り足し指定をご確認ください。</p></dialog>
+  <dialog id="helpDialog"><form method="dialog"><button class="close" aria-label="閉じる">×</button></form><div class="eyebrow">HELLO, CREATOR</div><h2>はじめてでも、自分の一枚。</h2><ol><li><b>デザインを選ぶ。</b> テンプレートはすべての要素を編集できます。</li><li><b>「告知内容」を入れる。</b> タイトル、日時、会場をまとめて変更。</li><li><b>おまかせで試す。</b> 戻るボタンで前の案に戻れます。鍵をかけたレイヤーは保持。</li><li><b>自分らしく整える。</b> 画像や素材を追加。要素をクリックして右側で調整。</li><li><b>書き出す。</b> PNG / JPEG を保存。続きは「データ保存」で残せます。</li></ol><p>Ctrl / ⌘ + Z：戻る　Shift + Z：やり直す<br>Ctrl / ⌘ + D：複製　Delete：削除<br>矢印：1px 移動　Shift + 矢印：10px 移動</p><p class="small-note">編集データはこのブラウザに自動保存されます。別の端末への移動やバックアップには「データ保存」をお使いください。テンプレートは本アプリ向けのオリジナルです。Pinterest / Canva の作品や素材は収録していません。</p><p class="small-note">JIZURA の「表現を組み合わせ、別案を試す」という考え方から生まれた独立した静止画エディターです。AI モデルの学習やオンライン生成は行いません。</p></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp" hidden><input id="projectInput" type="file" accept=".json,.flyra,application/json" hidden>
+  <input id="assetsInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden><input id="assetFolderInput" type="file" webkitdirectory multiple hidden><input id="assetLibraryInput" type="file" accept=".json" hidden>
+</body></html>

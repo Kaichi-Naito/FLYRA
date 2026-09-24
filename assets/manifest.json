@@ -1,0 +1,8 @@
+[
+  {"id":"grain-paper","name":"アナログ・ペーパー","folder":"textures","file":"textures/grain-paper.png","blend":"overlay","opacity":0.5},
+  {"id":"holo-gradient","name":"パール・ホログラム","folder":"textures","file":"textures/holo-gradient.png","blend":"soft-light","opacity":0.85},
+  {"id":"heat-gradient","name":"ヒート・グラデーション","folder":"textures","file":"textures/heat-gradient.png","blend":"source-over","opacity":1},
+  {"id":"chrome-star","name":"クローム・スパーク","folder":"icons","file":"icons/chrome-star.png","blend":"source-over","opacity":1},
+  {"id":"orbital-globe","name":"オービタル・グローブ","folder":"icons","file":"icons/orbital-globe.png","blend":"source-over","opacity":1},
+  {"id":"ink-butterfly","name":"インク・バタフライ","folder":"icons","file":"icons/ink-butterfly.png","blend":"source-over","opacity":1}
+]
