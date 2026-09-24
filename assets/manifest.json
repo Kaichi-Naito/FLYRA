@@ -190,5 +190,78 @@
     "file": "icons/arch-frame-technical-01.png",
     "blend": "source-over",
     "opacity": 1
+  },
+  {
+    "id": "import-2fc82154656de332",
+    "name": "グラデテクスチャ1",
+    "folder": "textures",
+    "file": "textures/グラデテクスチャ1.jpg",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "import-51e9af8faeda2d1c",
+    "name": "グラデテクスチャ2",
+    "folder": "textures",
+    "file": "textures/グラデテクスチャ2.jpg",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "import-637eb076c0bb5e85",
+    "name": "グラデテクスチャ3",
+    "folder": "textures",
+    "file": "textures/グラデテクスチャ3.jpg",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "import-9c2340190d054b20",
+    "name": "グラデテクスチャ4",
+    "folder": "textures",
+    "file": "textures/グラデテクスチャ4.jpg",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "import-f713606540d2edfc",
+    "name": "グラデテクスチャ5",
+    "folder": "textures",
+    "file": "textures/グラデテクスチャ5.jpg",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "import-2b4583844a20d0d0",
+    "name": "グラデテクスチャ6",
+    "folder": "textures",
+    "file": "textures/グラデテクスチャ6.jpg",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "import-3a13d32d77937087",
+    "name": "グラデテクスチャ7",
+    "folder": "textures",
+    "file": "textures/グラデテクスチャ7.jpg",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "import-9e8a89c72d08a3a9",
+    "name": "ノイズ加工_圧縮",
+    "folder": "textures",
+    "file": "textures/ノイズ加工_圧縮.png",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "import-8fc16ce08ec211a7",
+    "name": "水面グラデテクスチャ",
+    "folder": "textures",
+    "file": "textures/水面グラデテクスチャ.jpg",
+    "blend": "source-over",
+    "opacity": 1
   }
 ]
+

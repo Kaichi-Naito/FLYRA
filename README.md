@@ -87,3 +87,11 @@ Ctrl / ⌘ + Z：元に戻す、Ctrl / ⌘ + Shift + Z：やり直す、Ctrl / �
 
 一覧と構成の説明は TEMPLATE-PACK-02.md、見本は template-gallery.html を参照してください。
 
+## 素材を追加する場所と反映手順
+
+共有の内蔵素材は、リポジトリの `assets/icons/`（装飾・フレーム）または `assets/textures/`（質感・グラデーション）にPNG/JPEG/WebPを置きます。SVGは参考用に併置できますが、素材棚はPNG版を使用します。
+
+ファイルを置くだけでは公開版に反映されません。リポジトリ直下で `node build-assets.cjs` を実行してください。未登録画像はファイル名を素材名として登録され、既存の名前・合成設定は保持されます。画像、`assets/manifest.json`、`assets/catalog.js`、`assets/catalog-2.js`、`assets/catalog-3.js` を一緒にコミット・公開してください。PRで追加した場合はmainへのマージも必要です。GitHub画面から画像だけアップロードした場合は、登録・ビルドを担当者に依頼してください。
+
+個人の素材はアプリ内「素材棚 → 素材を登録 / フォルダを登録」から読み込めます。PCのフォルダとの自動同期ではありません。全ユーザー向けに公開する必要はありません。
+
