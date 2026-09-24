@@ -1,0 +1,15 @@
+<!doctype html><meta charset="utf-8"><title>FLYRA Template Pack 02</title>
+<style>body{margin:24px;background:#dddcd5;color:#202320;font:14px Arial}#gallery{display:grid;grid-template-columns:repeat(4,240px);gap:24px}canvas{width:240px;height:300px;display:block;box-shadow:0 4px 12px #0002}h2{font-size:13px;margin:9px 0 3px}p{margin:0 0 12px;font-size:11px}</style>
+<h1>FLYRA — 16 new editable templates</h1><pre id="results">Running</pre><div id="gallery"></div>
+<script src="engine.js"></script><script src="effects.js"></script><script src="templates.js"></script><script src="templates-02.js"></script>
+<script>
+(async()=>{const F=Flyra,out=document.querySelector('#results');let pass=0,fail=0;const test=(name,fn)=>{try{fn();pass++;}catch(e){fail++;out.textContent+='\nFAIL '+name+': '+e.message;}};const assert=v=>{if(!v)throw Error('assertion');};
+for(const t of F.templates.slice(0,16)){const p=F.makeProject(t.id,{...F.defaultContent,...t.preview});const c=document.createElement('canvas');c.width=480;c.height=600;F.render(c,p);const card=document.createElement('article'),h=document.createElement('h2'),info=document.createElement('p');h.textContent=t.name;info.textContent=t.caption+' / '+p.layers.length+' layers';card.append(c,h,info);document.querySelector('#gallery').append(card);
+test(t.id+' dimensions and editable roles',()=>{F.validate(p);for(const role of Object.keys(F.defaultContent))assert(p.layers.some(o=>o.role===role));assert(p.layers.length<150);});
+test(t.id+' square and portrait',()=>{for(const [w,h]of [[1080,1080],[1080,1920]]){const q=F.makeProject(t.id,F.defaultContent,w,h);F.validate(q);F.render(c,q);assert(c.toDataURL().length>1000);}F.render(c,p);});
+}
+const source=document.createElement('canvas');source.width=100;source.height=100;source.getContext('2d').fillRect(0,0,100,100);const src=source.toDataURL(),images=new Map([[src,await F.loadImage(src)]]);
+for(const mask of ['arch','capsule','steps','wave'])test(mask+' transparency survives photo replacement and save',()=>{const p=F.makeProject('orbit-paper');p.width=100;p.height=100;p.layers=[F.layer('image',0,0,100,100,{src,fit:'cover',mask})];const q=F.validate(JSON.parse(JSON.stringify(p))),c=document.createElement('canvas');c.width=100;c.height=100;F.render(c,q,{images,transparent:true});const ctx=c.getContext('2d');assert(ctx.getImageData(0,0,1,1).data[3]===0);assert(ctx.getImageData(50,50,1,1).data[3]===255);});
+out.textContent+='\nDONE: '+pass+' passed / '+fail+' failed';})();
+</script>
+

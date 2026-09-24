@@ -1,0 +1,12 @@
+<!doctype html><meta charset="utf-8"><title>Template import tests</title><button id="run">テスト用作品で写真の差し替えを検証</button><pre id="results">Ready</pre><iframe style="width:1450px;height:850px"></iframe>
+<script>
+document.querySelector('#run').onclick=()=>{document.querySelector('#run').disabled=true;(async()=>{
+const out=document.querySelector('#results'),frame=document.querySelector('iframe'),wait=ms=>new Promise(r=>setTimeout(r,ms));await new Promise(r=>{frame.onload=r;frame.src='index.html';});const w=frame.contentWindow,d=frame.contentDocument;for(let i=0;i<100&&!d.querySelector('.template-card');i++)await wait(100);let pass=0,fail=0;
+const check=(name,ok)=>{ok?pass++:fail++;out.textContent+='\n'+(ok?'PASS ':'FAIL ')+name;};out.textContent='Running';
+const canvas=d.createElement('canvas');canvas.width=50;canvas.height=50;canvas.getContext('2d').fillRect(0,0,50,50);const blob=await new Promise(r=>canvas.toBlob(r));const file=new w.File([blob],'replacement-test.png',{type:'image/png'}),input=d.querySelector('#imageInput');input.click=()=>{};
+for(const [id,name,mask]of [['orbit-paper','カプセル','capsule'],['night-window','アーチ','arch'],['step-signal','階段','steps'],['wave-gallery','波形','wave']]){
+d.querySelector('[data-template="'+id+'"]').click();await wait(100);d.querySelector('[aria-label="レイヤー 写真を入れる · '+name+'"]').click();d.querySelector('#replaceImage').click();const data=new w.DataTransfer();data.items.add(file);input.files=data.files;input.dispatchEvent(new w.Event('change'));await wait(300);check(id+' replacement preserves '+mask,d.querySelector('[data-prop="mask"]')?.value===mask);}
+out.textContent+='\nDONE: '+pass+' passed / '+fail+' failed';
+})().catch(e=>document.querySelector('#results').textContent+='\nERROR '+e.stack);};
+</script>
+
