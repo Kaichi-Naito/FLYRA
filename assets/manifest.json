@@ -94,6 +94,101 @@
     "file": "icons/warped-mesh.png",
     "blend": "source-over",
     "opacity": 1
+  },
+  {
+    "id": "star-chain-01",
+    "name": "四芒星チェイン 02",
+    "folder": "icons",
+    "file": "icons/star-chain-01.png",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "wireframe-globe-grid-01",
+    "name": "ワイヤー・グローブ 02",
+    "folder": "icons",
+    "file": "icons/wireframe-globe-grid-01.png",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "warped-mesh-01",
+    "name": "ウェーブ・メッシュ 02",
+    "folder": "icons",
+    "file": "icons/warped-mesh-01.png",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "orbit-rings-01",
+    "name": "オービット・リング",
+    "folder": "icons",
+    "file": "icons/orbit-rings-01.png",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "technical-arrow-01",
+    "name": "テクニカル・アロー",
+    "folder": "icons",
+    "file": "icons/technical-arrow-01.png",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "checker-band-01",
+    "name": "チェッカー・バンド",
+    "folder": "icons",
+    "file": "icons/checker-band-01.png",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "chrome-morph-01",
+    "name": "クローム・モーフ",
+    "folder": "icons",
+    "file": "icons/chrome-morph-01.png",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "xerox-hand-02",
+    "name": "ゼロックス・ハンド 02",
+    "folder": "icons",
+    "file": "icons/xerox-hand-02.png",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "micro-grain-overlay-01",
+    "name": "マイクロ・グレイン",
+    "folder": "textures",
+    "file": "textures/micro-grain-overlay-01.png",
+    "blend": "soft-light",
+    "opacity": 0.35
+  },
+  {
+    "id": "riso-color-field-02",
+    "name": "リソ・カラーフィールド 02",
+    "folder": "textures",
+    "file": "textures/riso-color-field-02.png",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "blue-violet-lighttrail-02",
+    "name": "ブルーバイオレット・ライトトレイル",
+    "folder": "textures",
+    "file": "textures/blue-violet-lighttrail-02.png",
+    "blend": "screen",
+    "opacity": 0.95
+  },
+  {
+    "id": "arch-frame-01",
+    "name": "アーチ・フレーム",
+    "folder": "icons",
+    "file": "icons/arch-frame-01.png",
+    "blend": "source-over",
+    "opacity": 1
   }
 ]
-

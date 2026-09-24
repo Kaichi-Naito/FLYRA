@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none" stroke-linecap="round">
+<g stroke="white">
+<circle cx="512" cy="512" r="330" stroke-width="4"/>
+<ellipse cx="512" cy="512" rx="80" ry="330" stroke-width="2" opacity=".75"/>
+<ellipse cx="512" cy="512" rx="165" ry="330" stroke-width="2" opacity=".75"/>
+<ellipse cx="512" cy="512" rx="245" ry="330" stroke-width="2" opacity=".75"/>
+<ellipse cx="512" cy="264" rx="218" ry="32" stroke-width="2" opacity=".65"/>
+<ellipse cx="512" cy="347" rx="286" ry="36" stroke-width="2" opacity=".65"/>
+<ellipse cx="512" cy="430" rx="320" ry="40" stroke-width="2" opacity=".65"/>
+<ellipse cx="512" cy="512" rx="330" ry="42" stroke-width="2" opacity=".8"/>
+<ellipse cx="512" cy="594" rx="320" ry="40" stroke-width="2" opacity=".65"/>
+<ellipse cx="512" cy="677" rx="286" ry="36" stroke-width="2" opacity=".65"/>
+<ellipse cx="512" cy="760" rx="218" ry="32" stroke-width="2" opacity=".65"/>
+</g>
+<ellipse cx="512" cy="512" rx="410" ry="160" transform="rotate(0 512 512)" stroke="#BED8FF" stroke-width="3" opacity=".9"/>
+</svg>
