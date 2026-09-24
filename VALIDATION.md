@@ -42,3 +42,7 @@ transform-tests.html: 27 passed / 0 failed (four corners at four rotations, live
 
 
 Photo frames: mask-tests.html 8 passed / 0 failed. Drop replacement, geometry/mask preservation, saved project validation, transparent corner pixels, filled center pixels, double-click picker.
+
+
+## v1.5 管理画面
+admin-tests.html: 10 checks passed with a mock repository (no real credentials). admin-api-tests.cjs: atomic tree/commit, conflict refusal, restricted paths, permissions error, token lifecycle. site-library-tests.cjs: category overrides, hidden/path filtering, canonical names. Browser-authenticated production write requires user's own GitHub token and was not exercised.

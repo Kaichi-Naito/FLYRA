@@ -29,7 +29,7 @@ const saved=()=>new Promise((resolve,reject)=>{const req=w.indexedDB.open('flyra
 click('[aria-label="レイヤー タイトル"]');const persisted=await saved();menu=open('font');hover(menu,'serif');await wait(700);check('hover never leaks into autosaved project',await saved()===persisted);w.FlyraSelect.close();
 click('[aria-label="レイヤー タイトル"]');menu=open('font');menu.querySelector('[data-value="noto-sans"]').click();await wait(100);check('Noto Sans exposes nine weights',d.querySelector('[data-prop="fontWeight"]').options.length===9);
 menu=open('fontWeight');menu.querySelector('[data-value="100"]').click();await wait(700);check('weight selection persists as number',JSON.parse(await saved()).layers.find(o=>o.role==='title').fontWeight===100);
-const asset=w.FLYRA_ASSETS.find(a=>a.id==='spark-chain'),bytes=Uint8Array.from(atob(asset.src.split(',')[1]),c=>c.charCodeAt(0)),file=new w.File([bytes],'download.png',{type:'image/png'});
+const asset=w.FLYRA_ASSETS.find(a=>a.id==='spark-chain'),bytes=Uint8Array.from(atob((await w.Flyra.assetDataURL(asset)).split(',')[1]),c=>c.charCodeAt(0)),file=new w.File([bytes],'download.png',{type:'image/png'});
 const dt=new w.DataTransfer();dt.items.add(file);const inp=d.querySelector('#imageInput');inp.files=dt.files;inp.dispatchEvent(new w.Event('change'));
 await wait(1500);check('direct import uses canonical asset name',d.querySelector('#layerList').textContent.includes(asset.name));
 const names=()=>d.querySelectorAll('[aria-label="レイヤー '+asset.name+'"]').length,previousCount=names(),dropData=new w.DataTransfer();dropData.items.add(file);d.querySelector('#canvasArea').dispatchEvent(new w.DragEvent('drop',{dataTransfer:dropData,bubbles:true}));await wait(1500);check('drop uses canonical asset name',names()===previousCount+1);
@@ -38,4 +38,3 @@ out.textContent+='\nDONE';
 })().catch(e=>document.querySelector('pre').textContent+='\nERROR '+e.stack);
 };
 </script>
-
