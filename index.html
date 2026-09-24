@@ -5,8 +5,8 @@
   <meta name="theme-color" content="#f5f4ef"><meta name="description" content="ライブとグッズのための、小さなデザインスタジオ。テンプレート、おまかせ構成、素材生成、レイヤー編集。">
   <title>FLYRA — 小さなデザインスタジオ</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23e95636'/%3E%3Cpath d='M12 10h19v5H17v5h11v5H17v8h-5z' fill='white'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="style.css">
-  <script defer src="engine.js?v=1.9.4"></script><script defer src="transforms.js?v=1.9.4"></script><script defer src="fonts.js?v=1.9.4"></script><script defer src="effects.js?v=1.9.4"></script><script defer src="templates.js?v=1.9.4"></script><script defer src="templates-02.js?v=1.9.4"></script><script defer src="assets/catalog.js?v=1.9.4"></script><script defer src="assets/catalog-2.js?v=1.9.4"></script><script defer src="assets/catalog-3.js?v=1.9.4"></script><script defer src="assets/catalog-logos.js?v=1.9.4"></script><script defer src="assets/catalog-barcodes.js?v=1.9.4"></script><script defer src="assets/catalog-imported.js?v=1.9.4"></script><script defer src="asset-names.js?v=1.9.4"></script><script defer src="preview-select.js?v=1.9.4"></script><script defer src="site-library.js?v=1.9.4"></script><script defer src="layer-dnd.js?v=1.9.4"></script><script defer src="content-kinds.js?v=1.9.4"></script><script defer src="hologram.js?v=1.9.4"></script><script defer src="barcode-stickers.js?v=1.9.4"></script><script defer src="mirror.js?v=1.9.4"></script><script defer src="app.js?v=1.9.4"></script>
+  <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="context-menu.css?v=1.9.5">
+  <script defer src="engine.js?v=1.9.5"></script><script defer src="transforms.js?v=1.9.5"></script><script defer src="fonts.js?v=1.9.5"></script><script defer src="text-weight.js?v=1.9.5"></script><script defer src="effects.js?v=1.9.5"></script><script defer src="templates.js?v=1.9.5"></script><script defer src="templates-02.js?v=1.9.5"></script><script defer src="assets/catalog.js?v=1.9.5"></script><script defer src="assets/catalog-2.js?v=1.9.5"></script><script defer src="assets/catalog-3.js?v=1.9.5"></script><script defer src="assets/catalog-logos.js?v=1.9.5"></script><script defer src="assets/catalog-barcodes.js?v=1.9.5"></script><script defer src="assets/catalog-imported.js?v=1.9.5"></script><script defer src="asset-names.js?v=1.9.5"></script><script defer src="preview-select.js?v=1.9.5"></script><script defer src="site-library.js?v=1.9.5"></script><script defer src="layer-dnd.js?v=1.9.5"></script><script defer src="content-kinds.js?v=1.9.5"></script><script defer src="hologram.js?v=1.9.5"></script><script defer src="barcode-stickers.js?v=1.9.5"></script><script defer src="vertical-text.js?v=1.9.5"></script><script defer src="mirror.js?v=1.9.5"></script><script defer src="favorites.js?v=1.9.5"></script><script defer src="context-menu.js?v=1.9.5"></script><script defer src="app.js?v=1.9.5"></script>
 </head>
 <body>
   <header class="topbar">
@@ -21,9 +21,10 @@
       <button data-panel="content" class="rail-button"><span>≡</span>告知内容</button>
       <button data-panel="elements" class="rail-button"><span>T</span>文字・図形</button>
       <button data-panel="images" class="rail-button"><span>▧</span>画像</button>
+      <button data-panel="favorites" class="rail-button"><span>☆</span>お気に入り</button>
       <button data-panel="assets" class="rail-button"><span>▱</span>素材棚</button>
       <button data-panel="materials" class="rail-button"><span>✳</span>素材を作る</button>
-      <div class="rail-bottom"><button id="help" class="rail-button"><span>?</span>使い方</button><span class="rail-version">v1.9.4</span></div>
+      <div class="rail-bottom"><button id="help" class="rail-button"><span>?</span>使い方</button><span class="rail-version">v1.9.5</span></div>
     </nav>
     <aside class="library">
       <section id="panel-templates" class="panel active">
@@ -32,6 +33,7 @@
         <div id="templateList" class="template-grid"></div>
         <div class="small-note">すべて編集できるオリジナルテンプレート。<br>告知内容とロックした要素は引き継ぎます。</div>
       </section>
+      <section id="panel-favorites" class="panel"><div class="eyebrow">YOUR FAVORITES</div><h1>お気に入り</h1><p class="muted">クリックでキャンバスへ追加。プロジェクトファイルにも保存されます。</p><div id="favoriteGrid" class="favorite-grid"></div></section>
       <section id="panel-content" class="panel">
         <div class="eyebrow">MAKE IT YOURS</div><h1 id="contentHeading">ライブの告知内容</h1><p class="muted"><span id="contentKindNote">同じ種類のデザインに内容を引き継ぎます。ライブとグッズの内容は別々に保持します。</span></p>
         <label><span data-content-label="title"></span><textarea id="content-title" rows="3" maxlength="120"></textarea></label>

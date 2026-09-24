@@ -1,0 +1,7 @@
+.context-menu{position:fixed;z-index:10000;min-width:220px;max-width:min(300px,calc(100vw - 16px));overflow-y:auto;padding:7px;background:#fff;border:1px solid #d8ddd5;border-radius:10px;box-shadow:0 12px 40px #172b2533}
+.context-menu-title{font-size:11px;color:#778074;padding:6px 9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.context-menu button{display:block;width:100%;border:0;border-radius:5px;text-align:left;padding:7px 10px;background:transparent}
+.context-menu button:hover,.context-menu button:focus-visible{background:#edf4ed;outline:0}
+.context-menu button.danger{color:#bb3939}.context-menu button:disabled{opacity:.35}
+.context-menu-divider{height:1px;background:#e5e8e1;margin:5px 2px}
+.favorite-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.favorite-grid>.small-note{grid-column:1/-1}.favorite-card{padding:7px;min-width:0}.favorite-card canvas{display:block;width:100%;max-height:190px;object-fit:contain;background:repeating-conic-gradient(#e6e8e2 0% 25%,#fff 0% 50%) 0/14px 14px}.favorite-card span{display:block;margin-top:7px;font-size:11px;overflow-wrap:anywhere;text-align:left}
