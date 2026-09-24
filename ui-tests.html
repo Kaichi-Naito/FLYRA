@@ -1,0 +1,32 @@
+<!doctype html><meta charset="utf-8"><title>FLYRA UI regression tests</title>
+<style>body{font:14px monospace}iframe{width:1450px;height:850px;border:1px solid #aaa}pre{white-space:pre-wrap}</style>
+<h1>FLYRA UI regression tests</h1><p>このテストはテスト用ブラウザで実行してください。テスト用作品を自動保存します。</p><button id="run">テスト用ブラウザでテストを開始</button><pre id="results">Ready</pre><iframe></iframe>
+<script>
+document.querySelector('#run').onclick=()=>{document.querySelector('#run').disabled=true;return (async()=>{
+const frame=document.querySelector('iframe'),out=document.querySelector('pre');let passed=0,failed=0;const lines=[];
+const wait=ms=>new Promise(r=>setTimeout(r,ms));await new Promise(r=>{frame.onload=r;frame.src='index.html';});const w=frame.contentWindow,d=frame.contentDocument;
+for(let i=0;i<100&&!d.querySelector('.template-card');i++)await wait(100);
+const check=(name,ok)=>{ok?passed++:failed++;lines.push((ok?'PASS ':'FAIL ')+name);out.textContent=lines.join('\n')+`\n${passed} passed / ${failed} failed`;};
+const click=s=>d.querySelector(s).click(),canvas=()=>d.querySelector('#artboard').toDataURL();
+const open=key=>{click(`[data-prop="${key}"] + .preview-select`);return d.querySelector('.preview-menu');};
+const hover=(menu,value)=>menu.querySelector(`[data-value="${value}"]`).dispatchEvent(new w.Event('pointerenter'));
+const leave=menu=>menu.dispatchEvent(new w.Event('pointerleave'));
+click('[data-template="riso"]');await wait(100);click('[aria-label="レイヤー タイトル"]');await wait(100);
+let a=d.querySelector('.workspace').getBoundingClientRect(),b=d.querySelector('.inspector').getBoundingClientRect(),c=d.querySelector('.layers-panel').getBoundingClientRect();check('canvas → properties → layers in independent columns',a.right<=b.left+1&&b.right<=c.left+1&&d.querySelector('#layerList').closest('.layers-panel'));
+const original=d.querySelector('[data-prop="font"]').value,before=canvas();let menu=open('font');hover(menu,'serif');await wait(100);
+check('font candidate renders without changing committed control',canvas()!==before&&d.querySelector('[data-prop="font"]').value===original);
+leave(menu);await wait(100);check('leaving menu restores exact original pixels',canvas()===before);
+hover(menu,'mono');await wait(100);menu.querySelector('[data-value="mono"]').click();await wait(100);check('click commits candidate',d.querySelector('[data-prop="font"]').value==='mono');click('#undo');await wait(100);click('[aria-label="レイヤー タイトル"]');check('one undo returns to pre-preview value',d.querySelector('[data-prop="font"]').value===original);
+menu=open('blend');const beforeBlend=d.querySelector('[data-prop="blend"]').value;hover(menu,'difference');await wait(100);menu.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));await wait(100);check('Escape cancels blend and closes menu',!d.querySelector('.preview-menu')&&d.querySelector('[data-prop="blend"]').value===beforeBlend);
+click('#lockLayer');check('locked layer cannot open preview',d.querySelector('[data-prop="blend"] + .preview-select').disabled);click('#lockLayer');
+click('[data-panel="assets"]');const folder=d.querySelector('#assetFolder');folder.value='icons';folder.dispatchEvent(new w.Event('change'));click('.asset-card');click('#addSelectedAssets');await wait(500);
+const baseline=canvas();menu=open('effect');hover(menu,'duotone');await wait(150);check('print effect candidate changes rendered image',canvas()!==baseline);leave(menu);await wait(150);check('print effect cancellation restores pixels',canvas()===baseline);w.FlyraSelect.close();
+menu=open('mask');hover(menu,'ellipse');await wait(100);click('[aria-label="レイヤー タイトル"]');check('layer switch closes menu',!d.querySelector('.preview-menu'));
+click('[data-panel="materials"]');click('#materialType + .preview-select');menu=d.querySelector('.preview-menu');const materialBefore=d.querySelector('#materialPreview').toDataURL();hover(menu,'particles');await wait(100);check('material preview changes without committing',d.querySelector('#materialPreview').toDataURL()!==materialBefore&&d.querySelector('#materialType').value==='gradient');leave(menu);await wait(100);check('material preview restores',d.querySelector('#materialPreview').toDataURL()===materialBefore);w.FlyraSelect.close();
+click('#sizePreset + .preview-select');menu=d.querySelector('.preview-menu');hover(menu,'1080,1080');await wait(100);check('canvas size preview keeps committed size',d.querySelector('#sizePreset').value==='1080,1350'&&d.querySelector('#canvasInfo').textContent.includes('プレビュー'));w.FlyraSelect.close();await wait(100);check('size cancellation restores dimensions',d.querySelector('#canvasInfo').textContent==='1080 × 1350 px');
+await wait(700);
+const saved=()=>new Promise((resolve,reject)=>{const req=w.indexedDB.open('flyra-studio',2);req.onsuccess=()=>{const db=req.result,read=db.transaction('projects').objectStore('projects').get('current');read.onsuccess=()=>{resolve(JSON.stringify(read.result));db.close();};read.onerror=reject;};req.onerror=reject;});
+click('[aria-label="レイヤー タイトル"]');const persisted=await saved();menu=open('font');hover(menu,'serif');await wait(700);check('hover never leaks into autosaved project',await saved()===persisted);w.FlyraSelect.close();
+out.textContent+='\nDONE';
+})().catch(e=>document.querySelector('pre').textContent+='\nERROR '+e.stack);
+</script>
