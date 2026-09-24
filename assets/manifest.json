@@ -339,7 +339,8 @@
     "blend": "source-over",
     "opacity": 1,
     "stickerKind": "graphic",
-    "sha256": "4a09ac699f3538e21264c8fec5dbc945eca648e4acbd4957d4fb96929ab7ad67"
+    "sha256": "4a09ac699f3538e21264c8fec5dbc945eca648e4acbd4957d4fb96929ab7ad67",
+    "hidden": true
   },
   {
     "id": "sticker-blue-recycle",
@@ -349,7 +350,8 @@
     "blend": "source-over",
     "opacity": 1,
     "stickerKind": "graphic",
-    "sha256": "5e8c42e5f6bdb7c8a13a29bc5f3ec60d786eede6a0b1e91eb4f2ea864cfa199a"
+    "sha256": "5e8c42e5f6bdb7c8a13a29bc5f3ec60d786eede6a0b1e91eb4f2ea864cfa199a",
+    "hidden": true
   },
   {
     "id": "sticker-cream-grid",
@@ -359,7 +361,8 @@
     "blend": "source-over",
     "opacity": 1,
     "stickerKind": "graphic",
-    "sha256": "53649fdd9b6967cfb312fb713e9a59b542b5b4e3720d8ac471f36917223db4f3"
+    "sha256": "53649fdd9b6967cfb312fb713e9a59b542b5b4e3720d8ac471f36917223db4f3",
+    "hidden": true
   },
   {
     "id": "sticker-orange-orbit",
@@ -369,7 +372,8 @@
     "blend": "source-over",
     "opacity": 1,
     "stickerKind": "graphic",
-    "sha256": "133fdb86ee798041eb7465df58a479fc65b4302ba6c36b7c8b8e37b9c0962871"
+    "sha256": "133fdb86ee798041eb7465df58a479fc65b4302ba6c36b7c8b8e37b9c0962871",
+    "hidden": true
   },
   {
     "id": "sticker-yellow-system",
@@ -379,7 +383,8 @@
     "blend": "source-over",
     "opacity": 1,
     "stickerKind": "graphic",
-    "sha256": "451ba5d552086dce581a2df768142c44de100f098b046491fd805b6aa4cfe05a"
+    "sha256": "451ba5d552086dce581a2df768142c44de100f098b046491fd805b6aa4cfe05a",
+    "hidden": true
   },
   {
     "id": "sticker-lime-globe",
@@ -389,7 +394,8 @@
     "blend": "source-over",
     "opacity": 1,
     "stickerKind": "graphic",
-    "sha256": "b3ab7bca259dbadc5781de6c4ec04e07e40db740fb9e1f3445f41c3db9354539"
+    "sha256": "b3ab7bca259dbadc5781de6c4ec04e07e40db740fb9e1f3445f41c3db9354539",
+    "hidden": true
   },
   {
     "id": "sticker-green-panel",
@@ -399,7 +405,8 @@
     "blend": "source-over",
     "opacity": 1,
     "stickerKind": "graphic",
-    "sha256": "6fa00af3a9ffdd6b85f1c484964a40574d344b104f59c6f6b84b73dfd04acbfd"
+    "sha256": "6fa00af3a9ffdd6b85f1c484964a40574d344b104f59c6f6b84b73dfd04acbfd",
+    "hidden": true
   },
   {
     "id": "sticker-lavender-loop",
@@ -409,7 +416,8 @@
     "blend": "source-over",
     "opacity": 1,
     "stickerKind": "graphic",
-    "sha256": "f18f163c79bb4f7c35dbb91c3364fc18558d175efe0025730739c11c14f0fcbf"
+    "sha256": "f18f163c79bb4f7c35dbb91c3364fc18558d175efe0025730739c11c14f0fcbf",
+    "hidden": true
   },
   {
     "id": "pixel-stardust-cluster",
