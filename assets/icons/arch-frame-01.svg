@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none">
+<path d="M210 860V430A302 302 0 0 1 814 430V860H210Z" stroke="white" stroke-width="5"/>
+<path d="M240 860V450A272 272 0 0 1 784 450V860" stroke="#C6FF2E" stroke-width="2.5"/>
+<g stroke="white" opacity=".65" stroke-width="2"><path d="M195 500H225M195 565H225M195 630H225M195 695H225M195 760H225M195 825H225"/></g>
+</svg>
