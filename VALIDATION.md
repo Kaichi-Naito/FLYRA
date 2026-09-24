@@ -46,3 +46,7 @@ Photo frames: mask-tests.html 8 passed / 0 failed. Drop replacement, geometry/ma
 
 ## v1.5 管理画面
 admin-tests.html: 10 checks passed with a mock repository (no real credentials). admin-api-tests.cjs: atomic tree/commit, conflict refusal, restricted paths, permissions error, token lifecycle. site-library-tests.cjs: category overrides, hidden/path filtering, canonical names. Browser-authenticated production write requires user's own GitHub token and was not exercised.
+
+
+## v1.6
+layer-dnd-tests.html: 12 passed (ordering, indicators, cancellation, locks, history, persistence). history-frame-tests.html: 14 passed (numeric/text input undo, dropdown undo, pending input, parent/child controls, photo dragging, removal/restore, project validation).

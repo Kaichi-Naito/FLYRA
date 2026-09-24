@@ -6,7 +6,7 @@
   <title>FLYRA — 小さなデザインスタジオ</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23e95636'/%3E%3Cpath d='M12 10h19v5H17v5h11v5H17v8h-5z' fill='white'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
-  <script defer src="engine.js"></script><script defer src="transforms.js"></script><script defer src="fonts.js"></script><script defer src="effects.js"></script><script defer src="templates.js"></script><script defer src="templates-02.js"></script><script defer src="assets/catalog.js"></script><script defer src="assets/catalog-2.js"></script><script defer src="assets/catalog-3.js"></script><script defer src="asset-names.js"></script><script defer src="preview-select.js"></script><script defer src="site-library.js"></script><script defer src="app.js"></script>
+  <script defer src="engine.js"></script><script defer src="transforms.js"></script><script defer src="fonts.js"></script><script defer src="effects.js"></script><script defer src="templates.js"></script><script defer src="templates-02.js"></script><script defer src="assets/catalog.js"></script><script defer src="assets/catalog-2.js"></script><script defer src="assets/catalog-3.js"></script><script defer src="asset-names.js"></script><script defer src="preview-select.js"></script><script defer src="site-library.js"></script><script defer src="layer-dnd.js"></script><script defer src="app.js"></script>
 </head>
 <body>
   <header class="topbar">
@@ -23,7 +23,7 @@
       <button data-panel="images" class="rail-button"><span>▧</span>画像</button>
       <button data-panel="assets" class="rail-button"><span>▱</span>素材棚</button>
       <button data-panel="materials" class="rail-button"><span>✳</span>素材を作る</button>
-      <div class="rail-bottom"><button id="help" class="rail-button"><span>?</span>使い方</button><span class="rail-version">v1.5</span></div>
+      <div class="rail-bottom"><button id="help" class="rail-button"><span>?</span>使い方</button><span class="rail-version">v1.6</span></div>
     </nav>
     <aside class="library">
       <section id="panel-templates" class="panel active">
@@ -88,7 +88,7 @@
       <div class="inspector-footer">DESIGNED BY YOU. <span>✳</span></div>
     </aside>
     <aside class="layers-panel" aria-label="レイヤー一覧">
-      <div class="layers-heading"><h2>レイヤー</h2><span id="layerCount"></span></div><p class="layer-note">上にある要素ほど手前に表示</p><div id="layerList"></div>
+      <div class="layers-heading"><h2>レイヤー</h2><span id="layerCount"></span></div><p class="layer-note">ドラッグで並び替え · 上ほど手前</p><div id="layerList"></div>
     </aside>
   </main>
   <dialog id="exportDialog"><form method="dialog"><button class="close" aria-label="閉じる">×</button></form><div class="eyebrow">READY TO GO</div><h2>あなたの一枚を、外へ。</h2><p class="muted">SNS に。お店に。次のライブに。</p><label>形式<select id="exportFormat"><option value="png">PNG — きれいに保存</option><option value="jpeg">JPEG — 軽いファイル</option></select></label><label>出力サイズ<select id="exportScale"><option value="1">標準（1倍）</option><option value="2">高解像度（2倍）</option></select></label><label class="check-label"><input type="checkbox" id="transparentExport">背景を透明にする（PNG）</label><p id="exportDimensions" class="small-note"></p><button id="downloadExport" class="primary wide">画像をダウンロード ↓</button><p class="small-note">RGB 画像として保存します。印刷所に出す場合は、先方の色・塗り足し指定をご確認ください。</p></dialog>
