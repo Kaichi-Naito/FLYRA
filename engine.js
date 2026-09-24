@@ -129,8 +129,9 @@ F.drawLayer=(ctx,o,images=new Map())=>{
  }
  }ctx.restore();
 };
-F.render=(canvas,p,{images=new Map(),transparent=false,onlyLayer=null}={})=>{
- const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);ctx.save();ctx.scale(canvas.width/p.width,canvas.height/p.height);
+F.viewportTransform=(ctx,canvas,p,v)=>{ctx.scale(canvas.width/(v?.w||p.width),canvas.height/(v?.h||p.height));if(v)ctx.translate(-v.x,-v.y);};
+F.render=(canvas,p,{images=new Map(),transparent=false,onlyLayer=null,viewport=null}={})=>{
+ const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);ctx.save();F.viewportTransform(ctx,canvas,p,viewport);
  if(!transparent&&!onlyLayer){F.drawLayer(ctx,F.layer(p.background.type==='solid'?'rect':p.background.type,0,0,p.width,p.height,{...p.background,type:p.background.type==='solid'?'rect':p.background.type,visible:true,opacity:1,rotation:0}),images);}
  for(const o of onlyLayer?[onlyLayer]:p.layers)F.drawLayer(ctx,o,images);ctx.restore();
 };
