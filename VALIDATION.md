@@ -39,3 +39,6 @@
 
 ## v1.4
 transform-tests.html: 27 passed / 0 failed (four corners at four rotations, live numeric/slider rendering, undo/cancel, handle rotation/resize, center snap). ui-tests.html: 20 passed / 0 failed.
+
+
+Photo frames: mask-tests.html 8 passed / 0 failed. Drop replacement, geometry/mask preservation, saved project validation, transparent corner pixels, filled center pixels, double-click picker.
