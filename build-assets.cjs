@@ -15,10 +15,12 @@ function build(root=__dirname){
   const type=mime[path.extname(a.file).toLowerCase()];if(!type)throw Error('Unsupported image: '+a.file);
   const bytes=fs.readFileSync(absolute);return{...a,sha256:crypto.createHash('sha256').update(bytes).digest('hex'),src:'data:'+type+';base64,'+bytes.toString('base64')};
  });
+ const standard=records.filter(a=>a.folder!=='logos');
+ fs.writeFileSync(path.join(dir,'catalog-logos.js'),'/* Generated logo catalog. */\nwindow.FLYRA_ASSETS.push(...'+JSON.stringify(records.filter(a=>a.folder==='logos'))+');\n');
  fs.writeFileSync(manifestPath,JSON.stringify(manifest,null,2)+'\n');
- fs.writeFileSync(path.join(dir,'catalog.js'),'/* Generated asset catalog. */\nwindow.FLYRA_ASSETS = '+JSON.stringify(records.slice(0,6))+';\n');
- fs.writeFileSync(path.join(dir,'catalog-2.js'),'/* Generated asset catalog. */\nwindow.FLYRA_ASSETS.push(...'+JSON.stringify(records.slice(6,12))+');\n');
- fs.writeFileSync(path.join(dir,'catalog-3.js'),'/* Generated asset catalog. */\nwindow.FLYRA_ASSETS.push(...'+JSON.stringify(records.slice(12))+');\n');
+ fs.writeFileSync(path.join(dir,'catalog.js'),'/* Generated asset catalog. */\nwindow.FLYRA_ASSETS = '+JSON.stringify(standard.slice(0,6))+';\n');
+ fs.writeFileSync(path.join(dir,'catalog-2.js'),'/* Generated asset catalog. */\nwindow.FLYRA_ASSETS.push(...'+JSON.stringify(standard.slice(6,12))+');\n');
+ fs.writeFileSync(path.join(dir,'catalog-3.js'),'/* Generated asset catalog. */\nwindow.FLYRA_ASSETS.push(...'+JSON.stringify(standard.slice(12))+');\n');
  console.log('Bundled '+records.length+' assets for offline use.');return records;
 }
 module.exports=build;if(require.main===module)build();

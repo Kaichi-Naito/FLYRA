@@ -262,6 +262,41 @@
     "file": "textures/水面グラデテクスチャ.jpg",
     "blend": "source-over",
     "opacity": 1
+  },
+  {
+    "id": "phalux-symbol-white",
+    "name": "PHALUX 文字なし（白）",
+    "folder": "logos",
+    "file": "logos/phalux-symbol-white.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "81f07147094bf450b2c13a872633b9403503761fecd9d5f4de8f92241d645744"
+  },
+  {
+    "id": "phalux-wordmark-black",
+    "name": "PHALUX 文字あり（黒）",
+    "folder": "logos",
+    "file": "logos/phalux-wordmark-black.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "84e2a1f783710729c577cb0f1c40fa564d163472ef746c79b0b0674d9ca88e89"
+  },
+  {
+    "id": "phalux-symbol-black",
+    "name": "PHALUX 文字なし（黒）",
+    "folder": "logos",
+    "file": "logos/phalux-symbol-black.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "dae1ab3b85eb71886d4f86fb901012bc24c3ea02f7b2910ef727cabe4f2a60dc"
+  },
+  {
+    "id": "phalux-wordmark-white",
+    "name": "PHALUX 文字あり（白）",
+    "folder": "logos",
+    "file": "logos/phalux-wordmark-white.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "fa157719e1a0a7cfb2a3705784cef77fe931a59f37b4baec7bda6b412296784d"
   }
 ]
-
