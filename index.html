@@ -6,7 +6,7 @@
   <title>FLYRA — 小さなデザインスタジオ</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23e95636'/%3E%3Cpath d='M12 10h19v5H17v5h11v5H17v8h-5z' fill='white'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
-  <script defer src="engine.js"></script><script defer src="effects.js"></script><script defer src="templates.js"></script><script defer src="assets/catalog.js"></script><script defer src="assets/catalog-2.js"></script><script defer src="preview-select.js"></script><script defer src="app.js"></script>
+  <script defer src="engine.js"></script><script defer src="fonts.js"></script><script defer src="effects.js"></script><script defer src="templates.js"></script><script defer src="assets/catalog.js"></script><script defer src="assets/catalog-2.js"></script><script defer src="asset-names.js"></script><script defer src="preview-select.js"></script><script defer src="app.js"></script>
 </head>
 <body>
   <header class="topbar">
@@ -23,7 +23,7 @@
       <button data-panel="images" class="rail-button"><span>▧</span>画像</button>
       <button data-panel="assets" class="rail-button"><span>▱</span>素材棚</button>
       <button data-panel="materials" class="rail-button"><span>✳</span>素材を作る</button>
-      <div class="rail-bottom"><button id="help" class="rail-button"><span>?</span>使い方</button><span class="rail-version">v1.1</span></div>
+      <div class="rail-bottom"><button id="help" class="rail-button"><span>?</span>使い方</button><span class="rail-version">v1.2</span></div>
     </nav>
     <aside class="library">
       <section id="panel-templates" class="panel active">
@@ -97,3 +97,4 @@
   <input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp" hidden><input id="projectInput" type="file" accept=".json,.flyra,application/json" hidden>
   <input id="assetsInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden><input id="assetFolderInput" type="file" webkitdirectory multiple hidden><input id="assetLibraryInput" type="file" accept=".json" hidden>
 </body></html>
+

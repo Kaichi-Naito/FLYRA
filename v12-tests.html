@@ -1,0 +1,16 @@
+<!doctype html><meta charset="utf-8"><title>FLYRA v1.2 tests</title>
+<button id="run">追加機能を検証</button><pre id="results">Ready</pre>
+<script src="engine.js"></script><script src="fonts.js"></script><script src="asset-names.js"></script><script src="assets/catalog.js"></script><script src="assets/catalog-2.js"></script>
+<script>
+document.querySelector('#run').onclick=async()=>{
+ const out=document.querySelector('#results'),F=Flyra;let pass=0,fail=0;
+ const test=async(name,fn)=>{try{if(!await fn())throw Error('assertion');pass++;out.textContent+='\nPASS '+name;}catch(e){fail++;out.textContent+='\nFAIL '+name+': '+e.message;}};
+ out.textContent='Running';
+ for(const a of FLYRA_ASSETS)await test('renamed original: '+a.name,async()=>{const bytes=Uint8Array.from(atob(a.src.split(',')[1]),c=>c.charCodeAt(0));return await F.resolveAssetName(new File([bytes],'download.png',{type:'image/png'}))===a.name;});
+ await test('unrecognized image keeps user filename',async()=>await F.resolveAssetName(new File(['different'],'my-photo.png',{type:'image/png'}))==='my-photo.png');
+ for(const f of F.fontCatalog){await test('serialize weights: '+f.id,()=>{for(const weight of f.weights){const p=F.makeProject();p.layers=[{...p.layers.find(o=>o.type==='text'),text:'FLYRA',font:f.id,fontWeight:weight}];const v=F.validate(JSON.parse(JSON.stringify(p)));if(v.layers[0].fontWeight!==weight||v.layers[0].font!==f.id)return false;}return true;});}
+ await Promise.all(F.fontCatalog.filter(f=>f.family).map(f=>test('online font: '+f.family,async()=>{for(const weight of [f.weights[0],f.weights.at(-1)])await F.ensureFont({font:f.id,fontWeight:weight,text:'FLYRA 日本語'});return true;})));
+ out.textContent+=`\nDONE: ${pass} passed / ${fail} failed`;
+};
+</script>
+

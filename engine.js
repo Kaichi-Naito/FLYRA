@@ -150,7 +150,7 @@ F.validate=p=>{
  for(const key of Object.keys(F.defaultContent)){if(typeof p.content[key]!=='string'||p.content[key].length>1000)fail();}
  const ids=new Set();for(const o of p.layers){
   if(!o||!types.includes(o.type)||typeof o.id!=='string'||ids.has(o.id)||typeof o.name!=='string'||o.name.length>200||!num(o.x,-20000,20000)||!num(o.y,-20000,20000)||!num(o.w,1,20000)||!num(o.h,1,20000)||!num(o.rotation,-360,360)||!num(o.opacity,0,1)||!color(o.color)||!color(o.color2)||typeof o.visible!=='boolean'||typeof o.locked!=='boolean'||!['source-over','multiply','screen','overlay'].includes(o.blend))fail();ids.add(o.id);
-  if(o.type==='text'&&(typeof o.text!=='string'||o.text.length>5000||!num(o.fontSize,1,2000)||!Object.keys(F.fonts).includes(o.font)||![400,700,900].includes(o.fontWeight)||!num(o.lineHeight,.7,3)||!['left','center','right'].includes(o.align)))fail();
+  if(o.type==='text'&&(typeof o.text!=='string'||o.text.length>5000||!num(o.fontSize,1,2000)||!Object.keys(F.fonts).includes(o.font)||![100,200,300,400,500,600,700,800,900].includes(o.fontWeight)||!num(o.lineHeight,.7,3)||!['left','center','right'].includes(o.align)))fail();
   for(const [k,min,max] of [['seed',0,2147483647],['angle',0,360],['density',5,100],['brightness',1,200],['contrast',1,200],['grayscale',0,100],['cropZoom',1,4],['cropX',-1,1],['cropY',-1,1]])if(o[k]!==undefined&&!num(o[k],min,max))fail();
   if(o.type==='image'&&(typeof o.src!=='string'||!/^data:image\/(png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(o.src)||o.src.length>15000000||!['cover','contain'].includes(o.fit)||!['rect','ellipse'].includes(o.mask)))fail();
   if(o.role&&!Object.keys(F.defaultContent).includes(o.role))fail();
@@ -158,3 +158,4 @@ F.validate=p=>{
 };
 root.Flyra=F;if(typeof module!=='undefined')module.exports=F;
 })(typeof window!=='undefined'?window:globalThis);
+

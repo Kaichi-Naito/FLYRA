@@ -78,5 +78,22 @@
     "file": "textures/light-trails.png",
     "blend": "screen",
     "opacity": 1
+  },
+  {
+    "id": "spark-chain",
+    "name": "スパーク・チェーン",
+    "folder": "icons",
+    "file": "icons/spark-chain.png",
+    "blend": "source-over",
+    "opacity": 1
+  },
+  {
+    "id": "warped-mesh",
+    "name": "ワープ・メッシュ",
+    "folder": "icons",
+    "file": "icons/warped-mesh.png",
+    "blend": "source-over",
+    "opacity": 1
   }
 ]
+
