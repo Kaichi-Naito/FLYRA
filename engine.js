@@ -135,7 +135,10 @@ F.hit=(o,x,y)=>{const p=F.localPoint(o,x,y);return o.visible&&!o.locked&&p.x>=0&
 F.resizeProject=(p,w,h)=>{const sx=w/p.width,sy=h/p.height;for(const o of p.layers){o.x*=sx;o.y*=sy;o.w*=sx;o.h*=sy;if(o.fontSize)o.fontSize*=Math.min(sx,sy);}p.width=w;p.height=h;};
 F.applyTemplate=(p,id,seed)=>{
  const next=F.makeProject(id,p.content,p.width,p.height,seed);next.name=p.name;
- const retained=p.layers.filter(o=>o.locked||o.userAdded);const roles=new Set(retained.filter(o=>o.role).map(o=>o.role));
+ const photos=p.layers.filter(o=>o.slot&&o.type==='image'&&!o.locked),slots=next.layers.filter(o=>o.slot&&!o.locked),used=new Set(),filled=new Set();
+ slots.forEach((slot,i)=>{if(!photos.length)return;const photo=photos[i%photos.length];used.add(photo.id);filled.add(slot.id);slot.frameName=slot.name;slot.type='image';slot.src=photo.src;slot.name=photo.name;slot.fit='cover';slot.mask=slot.mask||'rect';slot.cropZoom=1;slot.cropX=0;slot.cropY=0;slot.userAdded=true;for(const key of ['brightness','contrast','grayscale','effect','ink','paper','dotSize','effectAmount'])if(photo[key]!==undefined)slot[key]=photo[key];});
+ next.layers=next.layers.filter(o=>!filled.has(o.placeholderFor));
+ const retained=p.layers.filter(o=>(o.locked||o.userAdded)&&!used.has(o.id));const roles=new Set(retained.filter(o=>o.role).map(o=>o.role));
  next.layers=next.layers.filter(o=>!roles.has(o.role)&&!(o.type==='grain'&&retained.some(r=>r.type==='grain'&&r.locked))).concat(F.clone(retained));if(next.layers.length>150)throw new Error('テンプレートを適用すると150レイヤーを超えます。不要な要素を減らしてください。');return next;
 };
 F.recolor=(p,palette)=>{const old=p.palette;p.layers.forEach(o=>{if(o.locked)return;for(const key of ['color','color2']){const i=old.indexOf(o[key]);if(i!==-1)o[key]=palette[i];}});for(const key of ['color','color2']){const i=old.indexOf(p.background[key]);if(i!==-1)p.background[key]=palette[i];}p.palette=palette.slice();};
@@ -158,4 +161,3 @@ F.validate=p=>{
 };
 root.Flyra=F;if(typeof module!=='undefined')module.exports=F;
 })(typeof window!=='undefined'?window:globalThis);
-

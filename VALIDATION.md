@@ -53,3 +53,7 @@ layer-dnd-tests.html: 12 passed (ordering, indicators, cancellation, locks, hist
 
 
 Wheel zoom: wheel-tests.html 10 passed / 0 failed. Direction, line deltas, cursor anchor, 40–300% limits, panel isolation, fit reset, unchanged project/undo. Canvas fit uses outer viewport dimensions to avoid scrollbar-dependent zoom drift.
+
+
+## v1.7
+stability-tests.html: 33 passed / 0 failed. Large image project: 12 rapid Undo and Redo, no-op history, canvas nonblank between wheel frames, all 28 template mappings, locked frame preservation.
