@@ -13,7 +13,7 @@ function renderCategories(){
 }
 function renderAssets(){
  $('assetSettings').replaceChildren();for(const a of assets){const row=node('div');row.className='admin-row';const img=node('img');img.alt=a.name;img.src=pending.get(a.id)?.src||'https://raw.githubusercontent.com/Kaichi-Naito/FLYRA/'+repo.head+'/assets/'+(original.find(x=>x.id===a.id)?.file||a.file).split('/').map(encodeURIComponent).join('/');
- const folder=select([['icons','アイコン'],['textures','テクスチャ'],['logos','ロゴ'],['barcodes','バーコード']],a.folder,v=>{a.folder=v;});folder.setAttribute('aria-label',a.name+' の格納先');
+ const folder=select([['icons','アイコン'],['textures','テクスチャ'],['logos','ロゴ'],['barcodes','ステッカー']],a.folder,v=>{a.folder=v;});folder.setAttribute('aria-label',a.name+' の格納先');
  const visible=node('label','素材棚に表示 '),check=node('input');check.type='checkbox';check.checked=!a.hidden;check.onchange=()=>{a.hidden=!check.checked;changed();};visible.append(check);
  const replace=node('input');replace.type='file';replace.accept='image/png,image/jpeg,image/webp';replace.setAttribute('aria-label',a.name+' を差し替え');replace.onchange=async()=>{lock(true);try{await stage(replace.files[0],a);renderAssets();}catch(e){status(e.message);}finally{lock(false);}};
  row.append(img,input(a.name,'素材の表示名',v=>a.name=v),folder,visible,replace,node('small','保存先：assets/'+(a.file||a.folder+'/'+a.id+'.'+pending.get(a.id)?.ext)));$('assetSettings').append(row);}
