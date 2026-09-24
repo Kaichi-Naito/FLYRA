@@ -1,6 +1,6 @@
 /* Generated sticker artwork with editable, project-embedded typography. */
 (() => {
-const F=window.Flyra,draw=F.drawLayer,validate=F.validate,cache=new Map();
+const F=window.Flyra,draw=F.drawLayer,validate=F.validate,cache=new Map(),sourceIds=new WeakMap();let nextSourceId=0;
 F.stickerFields=[['stickerTitle','見出し'],['stickerSubtitle','サブタイトル'],['stickerMeta','詳細情報'],['stickerCode','管理番号']];
 F.stickerDefaults={inventory:{stickerTitle:'PHALUX / ARCHIVE',stickerSubtitle:'HANDLE WITH CARE',stickerMeta:'MADE IN: DARKNESS\nMODEL: ORIGINAL SOUND',stickerCode:'FL — 026'},system:{stickerTitle:'EXPERIMENTAL\nVECTOR SYSTEM',stickerSubtitle:'PHALUX / SOUND DIVISION',stickerMeta:'LIMITED EDITION',stickerCode:'TS26 / 001'},equipment:{stickerTitle:'SPECIAL EDITION',stickerSubtitle:'PHALUX / 2026',stickerMeta:'REFERENCE: SOUND\nPART NO: 026',stickerCode:'FL / 001'}};
 for(const d of Object.values(F.stickerDefaults)){for(const [k] of F.stickerFields)d[k]='';d.stickerShowText=false;}
@@ -26,7 +26,7 @@ F.restoreStickers=async p=>{let changed=false;for(const o of p.layers||[]){if(o.
 F.drawLayer=(ctx,o,images=new Map())=>{
  if(o.type!=='image'||!layouts[o.stickerKind])return draw(ctx,o,images);
  const source=images.get(o.src);if(!source||!o.visible)return;
- const key=o.src+'#sticker:'+JSON.stringify([o.stickerKind,o.stickerColorMode,o.stickerColor,o.stickerColorFinish,o.stickerTintTarget,o.stickerShowText,...F.stickerFields.map(([k])=>o[k])]);
+ if(!sourceIds.has(source))sourceIds.set(source,++nextSourceId);const key='sticker:'+sourceIds.get(source)+JSON.stringify([o.stickerKind,o.stickerColorMode,o.stickerColor,o.stickerColorFinish,o.stickerTintTarget,o.stickerShowText,...F.stickerFields.map(([k])=>o[k])]);
  let canvas=cache.get(key);
  if(!canvas){canvas=document.createElement('canvas');canvas.width=source.width;canvas.height=source.height;const c=canvas.getContext('2d');
  // Clip generated artwork to its die-cut contour; keep the page outside transparent.

@@ -222,12 +222,12 @@ document.addEventListener('contextmenu',e=>{
 });
 
 
-let favoriteRevision=0;
+let favoriteRevision=0,favoriteRenderKey=null;
 function registerFavorite(){const o=current();if(!o)return;if((project.favorites||[]).length>=100){toast('お気に入りは100件までです');return;}commit(()=>{project.favorites||=[];project.favorites.push(F.favoriteFromLayer(project,o));});toast('お気に入りに登録しました');}
 async function addFavorite(id){const f=project.favorites?.find(f=>f.id===id);if(!f)return;try{const o=F.layerFromFavorite(project,f);if(o.src)images.set(o.src,await F.loadImage(o.src));selectedPart='frame';add(o);}catch{toast('お気に入りを読み込めませんでした');}}
 function removeFavorite(id){commit(()=>{project.favorites=(project.favorites||[]).filter(f=>f.id!==id);});}
 function renderFavorites(){
- const revision=++favoriteRevision,list=$('favoriteGrid');list.replaceChildren();
+ const key=JSON.stringify([project.width,project.height,(project.favorites||[]).map(f=>f.id)]);if(key===favoriteRenderKey)return;favoriteRenderKey=key;const revision=++favoriteRevision,list=$('favoriteGrid');list.replaceChildren();
  if(!project.favorites?.length){const note=document.createElement('p');note.className='small-note';note.textContent='レイヤーを右クリックして「お気に入り登録」。文字・図形・画像の見た目と設定を、このプロジェクトに保存できます。';list.append(note);return;}
  for(const f of project.favorites){const card=document.createElement('button');card.type='button';card.className='favorite-card';card.dataset.favoriteId=f.id;card.setAttribute('aria-label',f.name+' お気に入りを追加');const canvas=document.createElement('canvas');canvas.width=220;canvas.height=Math.max(90,Math.round(220*f.height/f.width));const name=document.createElement('span');name.textContent=f.name;card.append(canvas,name);card.onclick=()=>addFavorite(f.id);list.append(card);
  const p={...project,width:f.width,height:f.height,layers:[{...f.layer,visible:true}]};Promise.all([F.prepare(p),F.ensureProjectFonts(p)]).then(([loaded])=>{if(revision===favoriteRevision)F.render(canvas,p,{images:loaded,transparent:true});}).catch(()=>{name.textContent=f.name+'（プレビューを読み込めません）';});

@@ -4,7 +4,7 @@
 const F=window.Flyra,draw=F.drawLayer,cache=new Map();
 let active=null,building=false,pixels=0;
 F.previewCacheStats={hits:0,misses:0};
-F.renderPreview=(canvas,p,options)=>{active=p;try{F.render(canvas,p,options);}finally{active=null;}};
+F.renderPreview=(canvas,p,options)=>{active=p;F.previewMode=true;try{F.render(canvas,p,options);}finally{active=null;F.previewMode=false;}};
 F.drawLayer=(ctx,o,images)=>{
  if(!active||building||!o.visible||!['grain','particles','halftone'].includes(o.type)||(o.blend&&o.blend!=='source-over'))return draw(ctx,o,images);
  const w=ctx.canvas.width,h=ctx.canvas.height,size=w*h;

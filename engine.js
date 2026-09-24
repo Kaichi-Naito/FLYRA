@@ -3,7 +3,9 @@
 'use strict';
 const F = {}; const TAU=Math.PI*2;
 F.uid=()=> 'l'+Math.random().toString(36).slice(2,10)+Date.now().toString(36);
-F.clone=x=>JSON.parse(JSON.stringify(x));
+// Project data is JSON-shaped. Reuse immutable strings instead of encoding
+// multi-megabyte image data on every gesture and undo snapshot.
+F.clone=function clone(x){if(x===null||typeof x!=='object')return typeof x==='number'&&!Number.isFinite(x)?null:x;if(Array.isArray(x))return x.map(v=>v===undefined?null:clone(v));return Object.fromEntries(Object.entries(x).filter(([,v])=>v!==undefined).map(([k,v])=>[k,clone(v)]));};
 F.random=seed=>()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};
 F.fonts={sans:'Arial, "Yu Gothic", "Meiryo", sans-serif',serif:'Georgia, "Yu Mincho", "MS PMincho", serif',mono:'"Courier New", "Yu Gothic", monospace',heavy:'"Arial Black", "Yu Gothic", "Meiryo", sans-serif'};
 F.palettes=[['#f3eee3','#26281f','#ea653f','#585fef'],['#18251f','#f5efe3','#d7f171','#648b58'],['#dedaf0','#262053','#fb764b','#7c92d2'],['#f4c3be','#802537','#e63d43','#f5e7c8'],['#eee9db','#23344b','#6a83b5','#d58449'],['#c5edfd','#151c7a','#ed631e','#8da4e8'],['#212122','#f5f0e0','#e2ff4c','#667e56'],['#f4e447','#27291f','#df4c28','#f8a9a1']];
