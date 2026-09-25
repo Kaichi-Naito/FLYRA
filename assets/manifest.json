@@ -472,5 +472,23 @@
     "blend": "source-over",
     "opacity": 1,
     "sha256": "899e2d19b7fa24fe47e84aab48e3cedd6a5977d3a29a92932b60cca8d8e68f27"
+  },
+  {
+    "id": "rightward-black-spark",
+    "name": "右へ伸びる黒い輝き星",
+    "folder": "icons",
+    "file": "icons/rightward-black-spark.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "94e41a3e4a1f197e499d4c0ac363f1136499e922aaaadfa03ddc2778bf001729"
+  },
+  {
+    "id": "halftone-pixel-heart",
+    "name": "ハーフトーンの黒いピクセルハート",
+    "folder": "icons",
+    "file": "icons/halftone-pixel-heart.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "8798e9f277e38ecafdb8fcd9eb39f0e311c031aa943613c635641ca09f4bcf01"
   }
 ]

@@ -87,6 +87,7 @@ function gradient(ctx,o){if(F.paint&&o.colorFinish&&o.colorFinish!=='solid')retu
 function textLines(ctx,text,max){const out=[];for(const paragraph of String(text).split('\n')){let line='';for(const char of Array.from(paragraph)){if(line&&ctx.measureText(line+char).width>max){out.push(line);line=char;}else line+=char;}out.push(line);}return out;}
 // Brightness above 100 blends toward white, including fully black pixels.
 F.imageFilter=o=>{const b=o.brightness??100,light=b>100?'invert(100%) brightness('+(200-b)+'%) invert(100%)':'brightness('+b+'%)';return (o.invertColors?'invert(100%) ':'')+light+' contrast('+(o.contrast??100)+'%) grayscale('+(o.grayscale??0)+'%)';};
+F.drawImageInFrame=(ctx,o,im)=>{const ratio=(o.fit==='contain'?Math.min:Math.max)(o.w/im.width,o.h/im.height)*(o.cropZoom||1),w=im.width*ratio,h=im.height*ratio,x=(o.w-w)/2+(o.cropX||0)*Math.abs(o.w-w)/2,y=(o.h-h)/2+(o.cropY||0)*Math.abs(o.h-h)/2;ctx.save();ctx.translate(x+w/2,y+h/2);ctx.rotate((o.cropRotation||0)*Math.PI/180);ctx.drawImage(im,-w/2,-h/2,w,h);ctx.restore();};
 F.drawLayer=(ctx,o,images=new Map())=>{
  if(!o.visible)return;ctx.save();ctx.globalAlpha=o.opacity;ctx.globalCompositeOperation=o.blend||'source-over';ctx.translate(o.x+o.w/2,o.y+o.h/2);ctx.rotate(o.rotation*Math.PI/180);ctx.translate(-o.w/2,-o.h/2);ctx.fillStyle=F.paint?F.paint(ctx,o):o.color;ctx.strokeStyle=F.paint?F.paint(ctx,o):o.color;ctx.lineWidth=Math.max(1,o.w/350);
  const w=o.w,h=o.h,rnd=F.random(o.seed||42);
@@ -125,8 +126,7 @@ F.drawLayer=(ctx,o,images=new Map())=>{
  case 'image':{
   const im=images.get(o.src);if(!im)break;ctx.beginPath();if(o.mask==='ellipse')ctx.ellipse(w/2,h/2,w/2,h/2,0,0,TAU);else ctx.rect(0,0,w,h);ctx.clip();
   ctx.filter=F.imageFilter(o);
-  const ratio=(o.fit==='contain'?Math.min:Math.max)(w/im.width,h/im.height)*(o.cropZoom||1),iw=im.width*ratio,ih=im.height*ratio;
-  const ix=(w-iw)/2+(o.cropX||0)*(Math.abs(w-iw)/2),iy=(h-ih)/2+(o.cropY||0)*(Math.abs(h-ih)/2);ctx.drawImage(im,ix,iy,iw,ih);break;
+  F.drawImageInFrame(ctx,o,im);break;
  }
  }ctx.restore();
 };
@@ -142,7 +142,7 @@ F.resizeProject=(p,w,h)=>{const sx=w/p.width,sy=h/p.height;for(const o of p.laye
 F.applyTemplate=(p,id,seed)=>{
  const next=F.makeProject(id,p.content,p.width,p.height,seed);next.name=p.name;
  const photos=p.layers.filter(o=>o.slot&&o.type==='image'&&!o.locked),slots=next.layers.filter(o=>o.slot&&!o.locked),used=new Set(),filled=new Set();
- slots.forEach((slot,i)=>{if(!photos.length)return;const photo=photos[i%photos.length];used.add(photo.id);filled.add(slot.id);slot.frameName=slot.name;slot.type='image';slot.src=photo.src;slot.name=photo.name;slot.fit='cover';slot.mask=slot.mask||'rect';slot.cropZoom=1;slot.cropX=0;slot.cropY=0;slot.userAdded=true;for(const key of ['offlineAsset','brightness','contrast','grayscale','invertColors','effect','ink','paper','dotSize','effectAmount'])if(photo[key]!==undefined)slot[key]=photo[key];});
+ slots.forEach((slot,i)=>{if(!photos.length)return;const photo=photos[i%photos.length];used.add(photo.id);filled.add(slot.id);slot.frameName=slot.name;slot.type='image';slot.src=photo.src;slot.name=photo.name;slot.fit='cover';slot.mask=slot.mask||'rect';slot.cropZoom=1;slot.cropX=0;slot.cropY=0;slot.userAdded=true;for(const key of ['offlineAsset','cropRotation','brightness','contrast','grayscale','invertColors','effect','ink','paper','dotSize','effectAmount'])if(photo[key]!==undefined)slot[key]=photo[key];});
  next.layers=next.layers.filter(o=>!filled.has(o.placeholderFor));
  const retained=p.layers.filter(o=>(o.locked||o.userAdded)&&!used.has(o.id));const roles=new Set(retained.filter(o=>o.role).map(o=>o.role));
  next.layers=next.layers.filter(o=>!roles.has(o.role)&&!(o.type==='grain'&&retained.some(r=>r.type==='grain'&&r.locked))).concat(F.clone(retained));if(next.layers.length>150)throw new Error('テンプレートを適用すると150レイヤーを超えます。不要な要素を減らしてください。');return next;
@@ -161,7 +161,7 @@ F.validate=p=>{
   if(!o||!types.includes(o.type)||typeof o.id!=='string'||ids.has(o.id)||typeof o.name!=='string'||o.name.length>200||!num(o.x,-20000,20000)||!num(o.y,-20000,20000)||!num(o.w,1,20000)||!num(o.h,1,20000)||!num(o.rotation,-360,360)||!num(o.opacity,0,1)||!color(o.color)||!color(o.color2)||typeof o.visible!=='boolean'||typeof o.locked!=='boolean'||!['source-over','multiply','screen','overlay'].includes(o.blend))fail();ids.add(o.id);
   if(o.type==='text'&&(typeof o.text!=='string'||o.text.length>5000||!num(o.fontSize,1,2000)||!Object.keys(F.fonts).includes(o.font)||!num(o.fontWeight,100,2000)||!num(o.lineHeight,.7,3)||!['left','center','right'].includes(o.align)))fail();
   if(o.invertColors!==undefined&&typeof o.invertColors!=='boolean')fail();
-  for(const [k,min,max] of [['seed',0,2147483647],['angle',0,360],['density',5,100],['brightness',1,200],['contrast',1,200],['grayscale',0,100],['cropZoom',1,4],['cropX',-1,1],['cropY',-1,1]])if(o[k]!==undefined&&!num(o[k],min,max))fail();
+  for(const [k,min,max] of [['seed',0,2147483647],['angle',0,360],['density',5,100],['brightness',1,200],['contrast',1,200],['grayscale',0,100],['cropRotation',0,360],['cropZoom',1,4],['cropX',-1,1],['cropY',-1,1]])if(o[k]!==undefined&&!num(o[k],min,max))fail();
   if(o.type==='image'&&(typeof o.src!=='string'||!/^data:image\/(png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(o.src)||o.src.length>15000000||!['cover','contain'].includes(o.fit)||!['rect','ellipse'].includes(o.mask)))fail();
   if(o.role&&!Object.keys(F.defaultContent).includes(o.role))fail();
  }return F.clone(p);
