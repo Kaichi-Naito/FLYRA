@@ -11,7 +11,7 @@ F.loadSiteLibrary=async()=>{
 };
 F.assetDataURL=async asset=>{
  if(asset.src.startsWith('data:'))return asset.src;
- const r=await fetch(asset.src);if(!r.ok)throw Error('素材を取得できません');const blob=await r.blob();if(blob.size>20*1024*1024)throw Error('素材は20MB以下にしてください');
+ const r=await fetch(asset.src,{signal:asset.signal});if(!r.ok)throw Error('素材を取得できません');const blob=await r.blob();if(blob.size>20*1024*1024)throw Error('素材は20MB以下にしてください');
  const src=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(blob);});
  if(!/^data:image\/(png|jpeg|webp);base64,/i.test(src))throw Error('未対応の画像です');asset.src=src;return src;
 };

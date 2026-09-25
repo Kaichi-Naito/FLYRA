@@ -22,7 +22,7 @@ F.stickerForSource=async src=>{
  try{const normalized=await signature(src);for(const a of candidates){try{if(normalized===await signature(await F.assetDataURL(a)))return {stickerKind:a.stickerKind,...F.stickerDefaults[a.stickerKind]};}catch{}}}catch{}
  return {};
 };
-F.restoreStickers=async p=>{let changed=false;for(const o of p.layers||[]){if(o.type!=='image'||o.stickerKind)continue;const data=await F.stickerForSource(o.src);if(data.stickerKind){Object.assign(o,data);changed=true;}}return changed;};
+F.restoreStickers=async p=>{let changed=false;for(const o of p.layers||[]){if(o.type!=='image'||o.stickerKind||o.offlineAsset)continue;const data=await F.stickerForSource(o.src);if(data.stickerKind){Object.assign(o,data);changed=true;}}return changed;};
 F.drawLayer=(ctx,o,images=new Map())=>{
  if(o.type!=='image'||!layouts[o.stickerKind])return draw(ctx,o,images);
  const source=images.get(o.src);if(!source||!o.visible)return;

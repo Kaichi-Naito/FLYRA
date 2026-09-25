@@ -5,13 +5,14 @@ F.packProject=p=>{
  const copy=F.clone(p),assets={},ids=new Map();
  for(const o of [...copy.layers,...(copy.favorites||[]).map(f=>f.layer)]){
   if(o?.type!=='image'||typeof o.src!=='string')continue;
-  if(!ids.has(o.src)){
-   const id='image-'+ids.size;ids.set(o.src,id);
+  const sourceKey=o.offlineAsset?JSON.stringify(o.offlineAsset):o.src;
+  if(!ids.has(sourceKey)){
+   const id='image-'+ids.size;ids.set(sourceKey,id);
    const libraryId=(window.FLYRA_ASSETS||[]).find(a=>a.src===o.src)?.id||F.bundledAssetSources?.get(o.src);
    const asset=F.libraryManifest?.find(a=>a.id===libraryId);
-   assets[id]=asset?{kind:'library',id:asset.id,file:asset.file,revision:asset.revision||'1'}:o.src;
+   assets[id]=o.offlineAsset|| (asset?{kind:'library',id:asset.id,file:asset.file,revision:asset.revision||'1'}:o.src);
   }
-  o.src='flyra-image:'+ids.get(o.src);
+  o.src='flyra-image:'+ids.get(sourceKey);
  }
  return {...copy,version:2,imageAssets:assets};
 };
@@ -35,15 +36,14 @@ F.unpackProject=async data=>{
   if(!id||!Object.hasOwn(data.imageAssets,id))throw Error('プロジェクト内の画像が見つかりません');
   if(!resolved.has(id)){
    const value=data.imageAssets[id];
-   if(typeof value==='string')resolved.set(id,value);
+   if(typeof value==='string')resolved.set(id,{src:value});
    else{
-    const asset=value?.kind==='library'&&F.libraryManifest?.find(a=>a.id===value.id&&a.file===value.file);
-    if(!asset||! /^(icons|textures|logos|barcodes)\//.test(asset.file)||asset.file.split('/').includes('..'))throw Error('素材棚の参照先が見つかりません: '+String(value?.id||id));
-    try{const src=await F.assetDataURL({src:'assets/'+asset.file.split('/').map(encodeURIComponent).join('/')+'?v='+encodeURIComponent(value.revision||'1')});resolved.set(id,src);F.bundledAssetSources?.set(src,asset.id);}
-    catch{throw Error('素材「'+(asset.name||asset.id)+'」を読み込めません。ネット接続を確認してください。');}
+    if(!F.validLibraryRef(value))throw Error('素材棚の参照先が不正です');
+    try{const src=await F.assetDataURL({src:'assets/'+value.file.split('/').map(encodeURIComponent).join('/')+'?v='+encodeURIComponent(value.revision||'1'),signal:AbortSignal.timeout(10000)});await F.loadImage(src);resolved.set(id,{src});F.bundledAssetSources?.set(src,value.id);}
+    catch{resolved.set(id,{src:F.offlineImage,offlineAsset:F.clone(value)});}
    }
   }
-  o.src=resolved.get(id);
+  const result=resolved.get(id);o.src=result.src;if(result.offlineAsset)o.offlineAsset=F.clone(result.offlineAsset);else delete o.offlineAsset;
  }
  return F.validate(copy);
 };
