@@ -4,7 +4,7 @@ const F=window.Flyra,make=F.makeProject,draw=F.drawLayer,id='five-cut-live',duoI
 const palette=['#6cf394','#151715','#ed75b4','#28623d'];
 const paletteIndex=F.palettes.push(palette)-1;
 F.templates.unshift(
- {id:duoId,name:'Three + Two / ツーマン',caption:'3 + 2 MEMBERS · TWO-MAN / LIVE',category:'live',palette:paletteIndex,preview:{title:'TWO BANDS / ONE NIGHT',subtitle:'3 MEMBERS × 2 MEMBERS',date:'2026.12.19  SAT',venue:'SHIBUYA / LIVE HOUSE',details:'BAND 01  ×  BAND 02',price:'OPEN 18:30 / START 19:00  ·  ADV ¥3,500'}},
+ {id:duoId,name:'Three + Two / ツーマン',caption:'TRIANGLE + DIAGONAL · TWO-MAN / LIVE',category:'live',palette:paletteIndex,preview:{title:'TWO BANDS / ONE NIGHT',subtitle:'3 MEMBERS × 2 MEMBERS',date:'2026.12.19  SAT',venue:'SHIBUYA / LIVE HOUSE',details:'TWO SOUNDS. ONE STAGE.',price:'OPEN 18:30 / START 19:00  ·  ADV ¥3,500'}},
  {id,name:'Five cuts / 5人のステージ',caption:'5 PORTRAITS · NEON / LIVE',category:'live',palette:paletteIndex,preview:{title:'FIVE / LIVE',subtitle:'FIVE VOICES. ONE NIGHT.',date:'2026.12.19  SAT',venue:'SHIBUYA / LIVE HOUSE',details:'MEMBER 01 / MEMBER 02 / MEMBER 03 / MEMBER 04 / MEMBER 05',price:'OPEN 18:30 / START 19:00  ·  ADV ¥3,500'}}
 );
 const shapes=[
@@ -19,7 +19,7 @@ F.drawLayer=(ctx,o,images)=>{
  if(o.type!=='rect'||(!o.fivePortrait&&!o.tornEdge))return draw(ctx,o,images);
  if(!o.visible)return;ctx.save();ctx.globalAlpha=o.opacity;ctx.globalCompositeOperation=o.blend||'source-over';ctx.translate(o.x+o.w/2,o.y+o.h/2);ctx.rotate((o.rotation||0)*Math.PI/180);ctx.translate(-o.w/2,-o.h/2);
  if(o.tornEdge){const rnd=F.random(o.seed);ctx.fillStyle=o.color;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(o.w*.75,0);for(let y=0;y<=o.h;y+=o.h/35)ctx.lineTo(o.w*(.12+rnd()*.88),y);ctx.lineTo(0,o.h);ctx.closePath();ctx.fill();}
- else{F.maskPath(ctx,o);ctx.clip();ctx.fillStyle=o.color;ctx.fillRect(0,0,o.w,o.h);const n=o.portraitIndex||0,cx=o.w*(.46+(n%3)*.035),cy=o.h*(.25+(n%2)*.025);ctx.fillStyle=o.color2;ctx.beginPath();ctx.ellipse(cx,cy,o.w*.27,o.h*.09,(n-2)*.08,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.moveTo(cx-o.w*.16,cy+o.h*.08);ctx.lineTo(cx+o.w*.15,cy+o.h*.08);ctx.lineTo(cx+o.w*.24,cy+o.h*.15);ctx.bezierCurveTo(o.w*1.2,o.h*.43,o.w*.93,o.h*.8,o.w,o.h);ctx.lineTo(0,o.h);ctx.bezierCurveTo(o.w*.07,o.h*.66,-o.w*.12,o.h*.42,cx-o.w*.23,cy+o.h*.15);ctx.closePath();ctx.fill();ctx.fillStyle=o.color;for(let j=0;j<6;j++)ctx.fillRect(0,o.h*(.48+j*.065),o.w,o.h*.012);ctx.globalAlpha*=.35;ctx.fillStyle=o.color2;for(let j=0;j<28;j++)ctx.fillRect((j%7)*o.w/7,Math.floor(j/7)*o.h/7,o.w*.015,o.h*.015);}
+ else{F.maskPath(ctx,o);ctx.clip();ctx.fillStyle=o.color;ctx.fillRect(0,0,o.w,o.h);const n=o.portraitIndex||0,cx=o.w*(.46+(n%3)*.035),cy=o.h*(.25+(n%2)*.025);ctx.fillStyle=o.color2;ctx.beginPath();ctx.ellipse(cx,cy,o.w*(o.mask==='rect'?.15:.27),o.h*(o.mask==='rect'?.14:.09),(n-2)*.08,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.moveTo(cx-o.w*.16,cy+o.h*.08);ctx.lineTo(cx+o.w*.15,cy+o.h*.08);ctx.lineTo(cx+o.w*.24,cy+o.h*.15);ctx.bezierCurveTo(o.w*1.2,o.h*.43,o.w*.93,o.h*.8,o.w,o.h);ctx.lineTo(0,o.h);ctx.bezierCurveTo(o.w*.07,o.h*.66,-o.w*.12,o.h*.42,cx-o.w*.23,cy+o.h*.15);ctx.closePath();ctx.fill();ctx.fillStyle=o.color;for(let j=0;j<6;j++)ctx.fillRect(0,o.h*(.48+j*.065),o.w,o.h*.012);ctx.globalAlpha*=.35;ctx.fillStyle=o.color2;for(let j=0;j<28;j++)ctx.fillRect((j%7)*o.w/7,Math.floor(j/7)*o.h/7,o.w*.015,o.h*.015);}
  ctx.restore();
 };
 F.makeProject=(key,content,width=1080,height=1350,seed=2026)=>{
@@ -29,27 +29,31 @@ F.makeProject=(key,content,width=1080,height=1350,seed=2026)=>{
  const text=(value,x,y,w,h,size,e={})=>add('text',x,y,w,h,{text:value,name:value,font:'heavy',fontSize:size,fontWeight:900,lineHeight:1,align:'left',...e});
  const bound=(role,label,x,y,w,h,size,e={})=>text(content[role]||'',x,y,w,h,size,{role,name:label,...e});
  bound('title','イベント名',48,34,904,125,108,{align:'center'});
- bound('venue','会場',55,170,290,58,24,{font:'barlow',fontWeight:800});
+ bound('venue','会場',55,170,key===duoId?380:290,58,key===duoId?22:24,{font:'barlow',fontWeight:800});
  add('burst',470,171,60,60,{color:p[2],name:'ピンクの光'});
- bound('subtitle','キャッチコピー',640,172,305,58,23,{align:'right',font:'barlow',fontWeight:800});
+ bound('subtitle','キャッチコピー',key===duoId?565:640,172,key===duoId?380:305,58,key===duoId?22:23,{align:'right',font:'barlow',fontWeight:800});
  add('rect',0,250,1000,121,{name:'日付の黒帯'});
  bound('date','公演日・時間',35,255,930,108,88,{color:p[0],align:'center',font:'barlow'});
  if(key===duoId){
-  add('rect',22,389,530,680,{name:'左バンドのまとまり',color:p[3],opacity:.18,locked:true});
-  add('rect',590,389,388,680,{name:'右バンドのまとまり',color:p[2],opacity:.13,locked:true});
-  add('rect',566,384,8,690,{name:'バンドの区切り',color:p[2],locked:true});
-  add('rect',30,397,512,42,{name:'左バンド見出し帯',color:p[1]});
-  text('BAND 01 · 3 MEMBERS',43,401,486,34,24,{color:p[0],font:'barlow',fontWeight:800,name:'左バンド名'});
-  add('rect',598,397,370,42,{name:'右バンド見出し帯',color:p[1]});
-  text('BAND 02 · 2 MEMBERS',611,401,344,34,24,{color:p[0],font:'barlow',fontWeight:800,name:'右バンド名'});
+  // The member order stays 01,02,03 / 04,05 so existing photos map to
+  // top-left, bottom-centre, top-right / bottom-left, top-right.
+  add('triangle',83,470,413,492,{name:'左バンド・三角の背景',rotation:180,color:p[3],opacity:.2});
+  add('line',645,554,229,24,{name:'右バンド・斜めのつながり',rotation:108,color:p[2],opacity:.55});
+  text('01 / TRIO',43,385,230,28,19,{name:'左グループ見出し',font:'barlow',fontWeight:800});
+  text('02 / DUO',741,385,220,28,19,{name:'右グループ見出し',font:'barlow',fontWeight:800,align:'right'});
   const frames=[
-   [30,451,164,602],[204,463,164,590],[378,451,164,602],
-   [598,451,175,602],[793,463,175,590]
+   [40,427,235,270,-4],[177,738,250,285,3],[304,427,235,270,4],
+   [584,742,275,285,-5],[694,427,275,285,5]
   ];
-  frames.forEach(([x,y,w,h],i)=>{
-   add('rect',x,y,w,h,{name:'人物 '+(i+1)+' · 写真を入れる',frameName:(i<3?'左バンド':'右バンド')+' · 人物 '+(i+1),slot:true,photoWindow:true,fivePortrait:true,portraitIndex:i,mask:'five-cut-'+i,effect:'duotone',ink:p[1],paper:i<3?p[0]:p[2],brightness:100,contrast:120});
-   text(String(i+1).padStart(2,'0'),x+10,i%2?y+h-74:y+10,78,58,49,{color:p[2],font:'serif',name:'人物番号 '+(i+1)});
+  frames.forEach(([x,y,w,h,rotation],i)=>{
+   add('rect',x-7,y-7,w+14,h+14,{name:'人物 '+(i+1)+' · 写真の縁',rotation,color:i<3?p[1]:p[2]});
+   add('rect',x,y,w,h,{name:'人物 '+(i+1)+' · 写真を入れる',frameName:(i<3?'左バンド':'右バンド')+' · 人物 '+(i+1),rotation,slot:true,photoWindow:true,fivePortrait:true,portraitIndex:i,mask:'rect',color2:i<3?p[0]:p[2],effect:'duotone',ink:p[1],paper:i<3?p[0]:p[2],brightness:100,contrast:120});
+   const labelX=x+(i===2||i===4?w-56:2),labelY=y+h-38;
+   add('rect',labelX-5,labelY-3,62,48,{name:'人物 '+(i+1)+' · 番号の台紙',color:p[1]});
+   text(String(i+1).padStart(2,'0'),labelX,labelY,54,42,34,{color:i<3?p[0]:p[2],font:'barlow',name:'人物番号 '+(i+1)});
   });
+  text('BAND 01',73,1049,440,45,37,{font:'barlow',fontWeight:900,align:'center',name:'左バンド名'});
+  text('BAND 02',600,1049,344,45,37,{font:'barlow',fontWeight:900,align:'center',name:'右バンド名'});
  }else for(let i=0;i<5;i++){
   const x=30+i*190,y=382+(i%2?8:0),h=680-(i%2?20:0);
   add('rect',x,y,180,h,{name:'人物 '+(i+1)+' · 写真を入れる',frameName:'人物 '+(i+1)+' · 斜め枠',slot:true,photoWindow:true,fivePortrait:true,portraitIndex:i,mask:'five-cut-'+i,effect:'duotone',ink:p[1],paper:p[0],brightness:100,contrast:120});
