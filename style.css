@@ -39,3 +39,4 @@
 .shape-grid button svg{display:block;margin:0 auto 5px;overflow:visible}.shape-grid button .shape-label{display:block;font-size:10px;line-height:1.4}
 
 .canvas-area.is-panning,.canvas-area.is-panning *{cursor:grabbing!important;user-select:none}
+.app-version{font-size:10px;color:var(--muted);letter-spacing:.02em;white-space:nowrap;margin-left:-12px;align-self:center}.topbar .brand{flex-shrink:0}@media(max-width:600px){.app-version{font-size:9px;margin-left:-5px}}

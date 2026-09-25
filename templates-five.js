@@ -64,4 +64,4 @@ F.makeProject=(key,content,width=1080,height=1350,seed=2026)=>{
  for(const o of layers){o.x*=width/1000;o.y*=height/1250;o.w*=width/1000;o.h*=height/1250;if(o.fontSize)o.fontSize*=Math.min(width/1000,height/1250);}
  return{format:'flyra',version:1,name:key===duoId?'3人組 × 2人組のツーマンフライヤー':'5人のライブフライヤー',width,height,template:key,seed,palette:p.slice(),content:F.clone(content),background:{type:'solid',color:p[0],color2:p[3],angle:0,density:45,seed},layers};
 };
-})();\n
+})();
