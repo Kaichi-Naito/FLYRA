@@ -35,3 +35,5 @@
 .canvas-wrap #overlay{inset:auto;pointer-events:auto;touch-action:none;z-index:2}.workspace-toolbar{gap:3px}.workspace-toolbar #toggleOverflow{white-space:nowrap;font-size:10px;padding:5px}
 
 .text-zoom{display:flex;align-items:center;gap:6px;margin:12px 0}.text-zoom>span{font-size:10px}.text-zoom label{margin:0;min-width:0;flex:1}.text-zoom input[type=number]{width:100%;padding:6px;font-size:12px}.text-zoom button{padding:6px;margin-top:18px;flex-shrink:0}.text-zoom button[aria-pressed=true]{background:#dfe7dc;border-color:#316353}
+
+.shape-grid button svg{display:block;margin:0 auto 5px;overflow:visible}.shape-grid button .shape-label{display:block;font-size:10px;line-height:1.4}

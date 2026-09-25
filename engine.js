@@ -91,6 +91,7 @@ F.drawLayer=(ctx,o,images=new Map())=>{
  if(!o.visible)return;ctx.save();ctx.globalAlpha=o.opacity;ctx.globalCompositeOperation=o.blend||'source-over';ctx.translate(o.x+o.w/2,o.y+o.h/2);ctx.rotate(o.rotation*Math.PI/180);ctx.translate(-o.w/2,-o.h/2);ctx.fillStyle=F.paint?F.paint(ctx,o):o.color;ctx.strokeStyle=F.paint?F.paint(ctx,o):o.color;ctx.lineWidth=Math.max(1,o.w/350);
  const w=o.w,h=o.h,rnd=F.random(o.seed||42);
  switch(o.type){
+ default:if(F.drawExtraShape)F.drawExtraShape(ctx,o);break;
  case 'text':{
   const family=F.fonts[o.font]||F.fonts.sans;let fs=o.fontSize||40,lines=[];
   const fit=()=>{ctx.font=`${F.nativeTextWeight?F.nativeTextWeight(o):o.fontWeight||400} ${fs}px ${family}`;lines=textLines(ctx,o.text,w);return lines.length*fs*(o.lineHeight||1.1)<=h;};
@@ -153,7 +154,7 @@ F.validate=p=>{
  const color=x=>typeof x==='string'&&/^#[0-9a-f]{6}$/i.test(x);
  if(!p||p.format!=='flyra'||p.version!==1||!num(p.width,100,5000)||!num(p.height,100,5000)||typeof p.name!=='string'||p.name.length>80||!Array.isArray(p.layers)||p.layers.length>150||!p.background||!p.content||!Array.isArray(p.palette)||p.palette.length!==4||!p.palette.every(color))fail();
  const materials=['solid','gradient','mesh','particles','grain','halftone'];
- const types=['text','rect','ellipse','triangle','star','burst','line','rings','grid','gradient','mesh','particles','grain','halftone','image'];
+ const types=[...Object.keys(F.extraShapes||{}),'text','rect','ellipse','triangle','star','burst','line','rings','grid','gradient','mesh','particles','grain','halftone','image'];
  if(!materials.includes(p.background.type)||!color(p.background.color)||!color(p.background.color2)||!num(p.background.angle,0,360)||!num(p.background.density,5,100)||!num(p.background.seed,0,2147483647))fail();
  for(const key of Object.keys(F.defaultContent)){if(typeof p.content[key]!=='string'||p.content[key].length>1000)fail();}
  const ids=new Set();for(const o of p.layers){
