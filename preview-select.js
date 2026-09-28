@@ -30,15 +30,20 @@ function enhance(root=document){
     item.addEventListener('pointerenter',preview);item.addEventListener('focus',preview);
     item.onclick=()=>{const value=option.value;close();if(value!==original){select.value=value;select.dispatchEvent(new Event('input',{bubbles:true}));select.dispatchEvent(new Event('change',{bubbles:true}));}refresh();
      const next=select.isConnected?button:document.querySelector(`[data-prop="${select.dataset.prop}"] + .preview-select`);next?.focus();};
-    item.onkeydown=e=>{let index=items.indexOf(item);if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();index=e.key==='Home'?0:e.key==='End'?items.length-1:(index+(e.key==='ArrowDown'?1:-1)+items.length)%items.length;items[index].focus();}};
+    item.onkeydown=e=>{const visible=items.filter(x=>!x.hidden);let index=visible.indexOf(item);if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)&&visible.length){e.preventDefault();index=e.key==='Home'?0:e.key==='End'?visible.length-1:(index+(e.key==='ArrowDown'?1:-1)+visible.length)%visible.length;visible[index].focus();}};
     items.push(item);menu.append(item);
+   }
+   let search;if(select.dataset.prop==='font'){
+    search=document.createElement('input');search.type='search';search.placeholder='書体名で検索';search.setAttribute('aria-label','書体名で検索');search.style.cssText='position:sticky;top:0;z-index:1;background:var(--paper,#fff);width:100%;margin:0 0 8px';
+    search.oninput=()=>{cancel();const term=search.value.trim().toLocaleLowerCase();items.forEach(item=>{item.hidden=!item.textContent.toLocaleLowerCase().includes(term);item.style.display=item.hidden?'none':'';item.classList.remove('previewing');});};
+    search.onkeydown=e=>{if(e.key==='ArrowDown'){e.preventDefault();items.find(item=>!item.hidden&&!item.disabled)?.focus();}};menu.insertBefore(search,hint);
    }
    (select.closest('dialog')||document.body).append(menu);
    const rect=button.getBoundingClientRect(),height=Math.min(330,window.innerHeight-24),width=Math.min(Math.max(rect.width,220),window.innerWidth-16);
    menu.style.width=width+'px';menu.style.maxHeight=height+'px';menu.style.left=Math.max(8,Math.min(rect.left,window.innerWidth-width-8))+'px';
    const actual=menu.getBoundingClientRect().height;menu.style.top=Math.max(8,Math.min(rect.bottom,window.innerHeight-actual-8))+'px';
    menu.addEventListener('pointerleave',()=>{cancel();items.forEach(x=>x.classList.remove('previewing'));});
-   if(focus)(items.find(x=>x.getAttribute('aria-selected')==='true')||items[0])?.focus();
+   if(focus)(search||items.find(x=>x.getAttribute('aria-selected')==='true')||items[0])?.focus();
   }
   button.onclick=()=>{if(active?.select===select)close();else open(true);};
   button.onkeydown=e=>{if(['ArrowDown','ArrowUp'].includes(e.key)){e.preventDefault();open(true);}};
