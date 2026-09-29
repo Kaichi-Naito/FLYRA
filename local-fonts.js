@@ -21,6 +21,7 @@ F.localFontInfo=id=>{
  const f=register(names);if(f.id!==id)throw Error('PCの書体情報が不正です');return f;
 };
 F.localFontsSupported=()=>window.isSecureContext&&typeof window.queryLocalFonts==='function';
+F.localFontListSummary=()=>lastScan?'このブラウザから取得：'+lastScan.received+'件 / FLYRAに登録：'+lastScan.registered+'件':'このブラウザのフォント一覧は未取得です。';
 F.fontSearchText=id=>{const f=F.fontCatalog.find(f=>f.id===id);return f?[f.label,f.family,f.style,f.postscriptName,f.fullName,...(f.aliases||[])].filter(Boolean).join(' '):id;};
 F.importLocalFonts=async(onProgress)=>{
  if(!F.localFontsSupported())throw Error('PC版ChromeまたはEdgeで開くと、このPCのフォントを利用できます。');
@@ -89,11 +90,12 @@ F.addLocalFontByName=async(name,onProgress)=>{
  }
  if(found.length===1)return save(found[0]);
  if(found.length>1)throw Error(chooseMessage(found.map(f=>f.name)));
- throw Error('「'+name+'」を、このブラウザから読み込めませんでした。インストール済みでも、ブラウザにフォントが公開されていない場合があります。下の診断情報で、権限・一覧の取得状況・名前の読み込み結果を確認できます。');
+ throw Error('「'+name+'」を、このブラウザから読み込めませんでした。'+F.localFontListSummary()+' ブラウザによって取得できる一覧が異なる場合があります。インストール済みでも見つからない場合は、別の対応ブラウザ（Chrome / Edge）で「このPCのフォントを使う」をお試しください。下の診断情報で取得状況を確認できます。');
 };
 F.localFontDiagnosticText=async()=>{
  let permission='確認できません';try{permission=(await navigator.permissions.query({name:'local-fonts'})).state;}catch{}
  const check=F.localFontLastCheck,lines=['ブラウザ: '+navigator.userAgent,'ローカルフォントAPI: '+(F.localFontsSupported()?'対応':'非対応'),'フォント権限: '+permission,lastScan?'一覧: ブラウザ取得 '+lastScan.received+' / FLYRA登録 '+lastScan.registered:'一覧: このページでは未取得'];
+ lines.push('件数はこのブラウザが返した一覧です。PCにある全フォントの件数ではなく、別のブラウザでは異なる場合があります。');
  if(check){lines.push('入力名: '+check.requested);if(check.enumeration)lines.push('一覧取得結果: '+check.enumeration);lines.push('一致した書体: '+(check.match||'なし'));if(check.result)lines.push('読み込み結果: '+check.result);for(const p of check.probes)lines.push((p.loaded?'成功: ':'失敗: ')+p.name+(p.error?' ('+p.error+')':''));}
  return lines.join('\n');
 };
