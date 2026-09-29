@@ -88,6 +88,17 @@ function textLines(ctx,text,max){const out=[];for(const paragraph of String(text
 // Brightness above 100 blends toward white, including fully black pixels.
 F.imageFilter=o=>{const b=o.brightness??100,light=b>100?'invert(100%) brightness('+(200-b)+'%) invert(100%)':'brightness('+b+'%)';return (o.invertColors?'invert(100%) ':'')+light+' contrast('+(o.contrast??100)+'%) grayscale('+(o.grayscale??0)+'%)';};
 F.drawImageInFrame=(ctx,o,im)=>{const ratio=(o.fit==='contain'?Math.min:Math.max)(o.w/im.width,o.h/im.height)*(o.cropZoom||1),w=im.width*ratio,h=im.height*ratio,x=(o.w-w)/2+(o.cropX||0)*Math.abs(o.w-w)/2,y=(o.h-h)/2+(o.cropY||0)*Math.abs(o.h-h)/2;ctx.save();ctx.translate(x+w/2,y+h/2);ctx.rotate((o.cropRotation||0)*Math.PI/180);ctx.drawImage(im,-w/2,-h/2,w,h);ctx.restore();};
+F.drawTextShadow=(ctx,o,size,draw)=>{
+ if(!o.shadow||(o.shadowOpacity??1)===0)return;
+ ctx.save();try{
+  const d=(o.shadowDistance??size*.045*Math.SQRT2)/Math.SQRT2;
+  ctx.translate(d,d);ctx.globalAlpha*=o.shadowOpacity??1;
+  ctx.fillStyle=ctx.strokeStyle=F.paint?F.paint(ctx,o,'color2'):o.color2;
+  const t=ctx.getTransform(),scale=Math.sqrt((t.a*t.a+t.b*t.b+t.c*t.c+t.d*t.d)/2);
+  if(o.shadowBlur>0)ctx.filter='blur('+(o.shadowBlur*scale)+'px)';
+  draw();
+ }finally{ctx.restore();}
+};
 F.drawLayer=(ctx,o,images=new Map())=>{
  if(!o.visible)return;ctx.save();ctx.globalAlpha=o.opacity;ctx.globalCompositeOperation=o.blend||'source-over';ctx.translate(o.x+o.w/2,o.y+o.h/2);ctx.rotate(o.rotation*Math.PI/180);ctx.translate(-o.w/2,-o.h/2);ctx.fillStyle=F.paint?F.paint(ctx,o):o.color;ctx.strokeStyle=F.paint?F.paint(ctx,o):o.color;ctx.lineWidth=Math.max(1,o.w/350);
  const w=o.w,h=o.h,rnd=F.random(o.seed||42);
@@ -98,7 +109,7 @@ F.drawLayer=(ctx,o,images=new Map())=>{
   const fit=()=>{ctx.font=`${F.nativeTextWeight?F.nativeTextWeight(o):o.fontWeight||400} ${fs}px ${family}`;lines=textLines(ctx,o.text,w);return lines.length*fs*(o.lineHeight||1.1)<=h;};
   let count=0;while(!fit()&&fs>3&&count++<150)fs*=.96;
   ctx.textBaseline='top';ctx.textAlign=o.align||'left';const tx=o.align==='center'?w/2:o.align==='right'?w:0;
-  if(o.shadow&&o.color2Finish&&o.color2Finish!=='solid'&&F.paint){ctx.save();ctx.translate(fs*.045,fs*.045);ctx.fillStyle=ctx.strokeStyle=F.paint(ctx,o,'color2');lines.forEach((line,i)=>{if(F.paintText)F.paintText(ctx,o,line,tx,i*fs*(o.lineHeight||1.1));else if(o.outline)ctx.strokeText(line,tx,i*fs*(o.lineHeight||1.1));else ctx.fillText(line,tx,i*fs*(o.lineHeight||1.1));});ctx.restore();}else if(o.shadow){ctx.shadowColor=o.color2;ctx.shadowBlur=0;ctx.shadowOffsetX=fs*.045;ctx.shadowOffsetY=fs*.045;}
+  F.drawTextShadow(ctx,o,fs,()=>lines.forEach((line,i)=>{if(F.paintText)F.paintText(ctx,o,line,tx,i*fs*(o.lineHeight||1.1));else if(o.outline)ctx.strokeText(line,tx,i*fs*(o.lineHeight||1.1));else ctx.fillText(line,tx,i*fs*(o.lineHeight||1.1));}));
   lines.forEach((line,i)=>{if(F.paintText)F.paintText(ctx,o,line,tx,i*fs*(o.lineHeight||1.1));else if(o.outline)ctx.strokeText(line,tx,i*fs*(o.lineHeight||1.1));else ctx.fillText(line,tx,i*fs*(o.lineHeight||1.1));});break;
  }
  case 'rect':{
@@ -176,7 +187,7 @@ F.validate=p=>{
   if(o.cornerRadius!==undefined&&!num(o.cornerRadius,0,10000))fail();
   if(o.borderWidth!==undefined&&!num(o.borderWidth,0,1000))fail();
   if(o.borderColor!==undefined&&!color(o.borderColor))fail();
-  for(const [k,min,max] of [['seed',0,2147483647],['angle',0,360],['density',5,100],['brightness',1,200],['contrast',1,200],['grayscale',0,100],['cropRotation',0,360],['cropZoom',1,4],['cropX',-1,1],['cropY',-1,1]])if(o[k]!==undefined&&!num(o[k],min,max))fail();
+  for(const [k,min,max] of [['shadowDistance',0,1000],['shadowBlur',0,200],['shadowOpacity',0,1],['seed',0,2147483647],['angle',0,360],['density',5,100],['brightness',1,200],['contrast',1,200],['grayscale',0,100],['cropRotation',0,360],['cropZoom',1,4],['cropX',-1,1],['cropY',-1,1]])if(o[k]!==undefined&&!num(o[k],min,max))fail();
   if(o.type==='image'&&(typeof o.src!=='string'||!/^data:image\/(png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(o.src)||o.src.length>15000000||!['cover','contain'].includes(o.fit)||!['rect','ellipse'].includes(o.mask)))fail();
   if(o.role&&!Object.keys(F.defaultContent).includes(o.role))fail();
  }return F.clone(p);

@@ -27,7 +27,7 @@ F.drawLayer=(ctx,o,images)=>{
  ctx.font=`${F.nativeTextWeight?F.nativeTextWeight(o):o.fontWeight||400} ${size}px ${F.fonts[o.font]||F.fonts.sans}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=Math.max(.5,size*.022);
  const paint=key=>{ctx.fillStyle=ctx.strokeStyle=F.paint?F.paint(ctx,o,key):o[key];};
  const glyphs=()=>{for(const g of layout.glyphs){ctx.save();ctx.translate(g.x+g.dx*size,g.y+g.dy*size);if(g.rotate)ctx.rotate(Math.PI/2);if(F.paintText)F.paintText(ctx,o,g.ch,0,0);else if(o.outline)ctx.strokeText(g.ch,0,0);else ctx.fillText(g.ch,0,0);ctx.restore();}};
- if(o.shadow){ctx.save();ctx.translate(size*.045,size*.045);paint('color2');glyphs();ctx.restore();}
+ F.drawTextShadow(ctx,o,size,glyphs);
  paint('color');glyphs();
  }finally{ctx.restore();}
 };

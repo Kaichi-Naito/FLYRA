@@ -6,7 +6,7 @@ const prefix='local:',quote=s=>'"'+s.replace(/["\\\n\r\f]/g,c=>'\\'+c.codePointA
 let lastScan=null,restoreScan=null;
 const valid=names=>Array.isArray(names)&&names.length===4&&names.every(s=>typeof s==='string'&&s.length>0&&s.length<=300&&!/[\u0000-\u001f\u007f]/.test(s));
 function register(names){
- if(!valid(names))throw Error('PCの書体情報が不正です');
+ if(!valid(names))throw Error('PCのフォント情報が不正です');
  const id=prefix+encodeURIComponent(JSON.stringify(names));
  if(entries.has(id))return entries.get(id);
  const [postscriptName,fullName,family,style]=names,alias='FLYRA_Local_'+entries.size;
@@ -15,10 +15,10 @@ function register(names){
 }
 F.localFontInfo=id=>{
  if(typeof id!=='string'||!id.startsWith(prefix))return null;
- if(id.length>12000)throw Error('PCの書体情報が長すぎます');
+ if(id.length>12000)throw Error('PCのフォント情報が長すぎます');
  if(entries.has(id))return entries.get(id);
- let names;try{names=JSON.parse(decodeURIComponent(id.slice(prefix.length)));}catch{throw Error('PCの書体情報が不正です');}
- const f=register(names);if(f.id!==id)throw Error('PCの書体情報が不正です');return f;
+ let names;try{names=JSON.parse(decodeURIComponent(id.slice(prefix.length)));}catch{throw Error('PCのフォント情報が不正です');}
+ const f=register(names);if(f.id!==id)throw Error('PCのフォント情報が不正です');return f;
 };
 F.localFontsSupported=()=>window.isSecureContext&&typeof window.queryLocalFonts==='function';
 F.localFontListSummary=()=>lastScan?'このブラウザから取得：'+lastScan.received+'件 / FLYRAに登録：'+lastScan.registered+'件':'このブラウザのフォント一覧は未取得です。';
@@ -57,7 +57,7 @@ F.importLocalFonts=async(onProgress)=>{
  return found.size;
 };
 F.addLocalFontByName=async(name,onProgress)=>{
- name=String(name).replace(/[\u200b-\u200d\ufeff]/g,'').trim();if(!valid([name,name,name,'Regular']))throw Error('書体の正式な名前を入力してください（300文字以内）。');
+ name=String(name).replace(/[\u200b-\u200d\ufeff]/g,'').trim();if(!valid([name,name,name,'Regular']))throw Error('フォントの正式な名前を入力してください（300文字以内）。');
  const report={requested:name,probes:[]};F.localFontLastCheck=report;
  // Query while the button's user activation is still available. Permission alone
  // does not populate sources, and CSS local() can fail even for enumerated fonts.
@@ -96,7 +96,7 @@ F.localFontDiagnosticText=async()=>{
  let permission='確認できません';try{permission=(await navigator.permissions.query({name:'local-fonts'})).state;}catch{}
  const check=F.localFontLastCheck,lines=['ブラウザ: '+navigator.userAgent,'ローカルフォントAPI: '+(F.localFontsSupported()?'対応':'非対応'),'フォント権限: '+permission,lastScan?'一覧: ブラウザ取得 '+lastScan.received+' / FLYRA登録 '+lastScan.registered:'一覧: このページでは未取得'];
  lines.push('件数はこのブラウザが返した一覧です。PCにある全フォントの件数ではなく、別のブラウザでは異なる場合があります。');
- if(check){lines.push('入力名: '+check.requested);if(check.enumeration)lines.push('一覧取得結果: '+check.enumeration);lines.push('一致した書体: '+(check.match||'なし'));if(check.result)lines.push('読み込み結果: '+check.result);for(const p of check.probes)lines.push((p.loaded?'成功: ':'失敗: ')+p.name+(p.error?' ('+p.error+')':''));}
+ if(check){lines.push('入力名: '+check.requested);if(check.enumeration)lines.push('一覧取得結果: '+check.enumeration);lines.push('一致したフォント: '+(check.match||'なし'));if(check.result)lines.push('読み込み結果: '+check.result);for(const p of check.probes)lines.push((p.loaded?'成功: ':'失敗: ')+p.name+(p.error?' ('+p.error+')':''));}
  return lines.join('\n');
 };
 async function restoreGrantedSources(){

@@ -39,10 +39,10 @@ function enhance(root=document){
     items.push(item);container.append(item);
    }
    let search;if(select.dataset.prop==='font'){
-    search=document.createElement('input');search.type='search';search.placeholder='書体名で検索';search.setAttribute('aria-label','書体名で検索');search.style.cssText='position:sticky;top:0;z-index:1;background:var(--paper,#fff);width:100%;margin:0 0 8px';
+    search=document.createElement('input');search.type='search';search.placeholder='フォント名で検索';search.setAttribute('aria-label','フォント名で検索');search.style.cssText='position:sticky;top:0;z-index:1;background:var(--paper,#fff);width:100%;margin:0 0 8px';
     const normalize=window.Flyra.normalizeFontSearch||((s)=>s.normalize('NFKC').toLocaleLowerCase());
     const searchText=new Map(items.map(item=>[item,normalize(window.Flyra.fontSearchText?.(item.dataset.value)||item.textContent)]));
-    search.oninput=()=>{cancel();const term=normalize(search.value);items.forEach(item=>{item.hidden=!searchText.get(item).includes(term);item.style.display=item.hidden?'none':'';item.classList.remove('previewing');});for(const group of groups.values())group.hidden=![...group.querySelectorAll('[role=option]')].some(item=>!item.hidden);hint.textContent=items.some(item=>!item.hidden)?'カーソルで試す · クリックで確定':'一致する書体がありません。「一覧にない書体を名前で追加」もお試しください。';};
+    search.oninput=()=>{cancel();const term=normalize(search.value);items.forEach(item=>{item.hidden=!searchText.get(item).includes(term);item.style.display=item.hidden?'none':'';item.classList.remove('previewing');});for(const group of groups.values())group.hidden=![...group.querySelectorAll('[role=option]')].some(item=>!item.hidden);hint.textContent=items.some(item=>!item.hidden)?'カーソルで試す · クリックで確定':'一致するフォントがありません。「一覧にないフォントを名前で追加」もお試しください。';};
     search.onkeydown=e=>{if(e.key==='ArrowDown'){e.preventDefault();items.find(item=>!item.hidden&&!item.disabled)?.focus();}};menu.insertBefore(search,hint);
    }
    (select.closest('dialog')||document.body).append(menu);
