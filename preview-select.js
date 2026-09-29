@@ -23,21 +23,26 @@ function enhance(root=document){
    const original=select.value;
    const cancel=()=>select.dispatchEvent(new CustomEvent('previewcancel',{bubbles:true}));
    active={select,button,menu,cancel};button.setAttribute('aria-controls',menu.id);button.setAttribute('aria-expanded','true');
-   const items=[];
+   const items=[],groups=new Map();
    for(const option of select.options){
-    const item=document.createElement('button');item.type='button';item.setAttribute('role','option');item.setAttribute('aria-selected',String(option.value===original));item.textContent=option.textContent;item.dataset.value=option.value;item.disabled=option.disabled;item.tabIndex=option.value===original?0:-1;
+    const parent=option.parentElement;let container=menu;
+    if(parent.tagName==='OPTGROUP'){
+     if(!groups.has(parent)){const group=document.createElement('div'),heading=document.createElement('div');group.setAttribute('role','group');group.setAttribute('aria-label',parent.label);heading.className='preview-group-label';heading.textContent=parent.label;heading.setAttribute('aria-hidden','true');group.append(heading);menu.append(group);groups.set(parent,group);}
+     container=groups.get(parent);
+    }
+    const item=document.createElement('button');item.type='button';item.setAttribute('role','option');item.setAttribute('aria-selected',String(option.value===original));item.textContent=option.textContent;item.dataset.value=option.value;item.disabled=option.disabled||!!parent.disabled;item.tabIndex=option.value===original?0:-1;
     const preview=()=>{if(item.disabled)return;items.forEach(x=>x.classList.toggle('previewing',x===item));select.dispatchEvent(new CustomEvent('optionpreview',{bubbles:true,detail:{value:option.value}}));};
     item.addEventListener('pointerenter',preview);item.addEventListener('focus',preview);
     item.onclick=()=>{const value=option.value;close();if(value!==original){select.value=value;select.dispatchEvent(new Event('input',{bubbles:true}));select.dispatchEvent(new Event('change',{bubbles:true}));}refresh();
      const next=select.isConnected?button:document.querySelector(`[data-prop="${select.dataset.prop}"] + .preview-select`);next?.focus();};
-    item.onkeydown=e=>{const visible=items.filter(x=>!x.hidden);let index=visible.indexOf(item);if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)&&visible.length){e.preventDefault();index=e.key==='Home'?0:e.key==='End'?visible.length-1:(index+(e.key==='ArrowDown'?1:-1)+visible.length)%visible.length;visible[index].focus();}};
-    items.push(item);menu.append(item);
+    item.onkeydown=e=>{const visible=items.filter(x=>!x.hidden&&!x.disabled);let index=visible.indexOf(item);if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)&&visible.length){e.preventDefault();index=e.key==='Home'?0:e.key==='End'?visible.length-1:(index+(e.key==='ArrowDown'?1:-1)+visible.length)%visible.length;visible[index].focus();}};
+    items.push(item);container.append(item);
    }
    let search;if(select.dataset.prop==='font'){
     search=document.createElement('input');search.type='search';search.placeholder='書体名で検索';search.setAttribute('aria-label','書体名で検索');search.style.cssText='position:sticky;top:0;z-index:1;background:var(--paper,#fff);width:100%;margin:0 0 8px';
     const normalize=window.Flyra.normalizeFontSearch||((s)=>s.normalize('NFKC').toLocaleLowerCase());
     const searchText=new Map(items.map(item=>[item,normalize(window.Flyra.fontSearchText?.(item.dataset.value)||item.textContent)]));
-    search.oninput=()=>{cancel();const term=normalize(search.value);items.forEach(item=>{item.hidden=!searchText.get(item).includes(term);item.style.display=item.hidden?'none':'';item.classList.remove('previewing');});hint.textContent=items.some(item=>!item.hidden)?'カーソルで試す · クリックで確定':'一致する書体がありません。「一覧にない書体を名前で追加」もお試しください。';};
+    search.oninput=()=>{cancel();const term=normalize(search.value);items.forEach(item=>{item.hidden=!searchText.get(item).includes(term);item.style.display=item.hidden?'none':'';item.classList.remove('previewing');});for(const group of groups.values())group.hidden=![...group.querySelectorAll('[role=option]')].some(item=>!item.hidden);hint.textContent=items.some(item=>!item.hidden)?'カーソルで試す · クリックで確定':'一致する書体がありません。「一覧にない書体を名前で追加」もお試しください。';};
     search.onkeydown=e=>{if(e.key==='ArrowDown'){e.preventDefault();items.find(item=>!item.hidden&&!item.disabled)?.focus();}};menu.insertBefore(search,hint);
    }
    (select.closest('dialog')||document.body).append(menu);
