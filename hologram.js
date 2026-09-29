@@ -11,5 +11,5 @@ F.finishTexture=kind=>{
  const light=x.createLinearGradient(0,512,512,0);[[0,'#ffffff00'],[.3,'#ffffff00'],[.42,'#ffffffb0'],[.47,'#ffffffee'],[.51,'#ffffff20'],[.66,'#26377725'],[.76,'#ffffff99'],[1,'#ffffff00']].forEach(([p,v])=>light.addColorStop(p,v));x.fillStyle=light;x.fillRect(0,0,512,512);textures.set(kind,c);return c;
 };
 F.paint=(ctx,o,key='color')=>{const kind=o[key+'Finish'];if(!kind||kind==='solid')return o[key];const p=ctx.createPattern(F.finishTexture(kind),'repeat');p.setTransform(new DOMMatrix().scale(Math.max(1,o.w)/512,Math.max(1,o.h)/512));return p;};
-F.validate=p=>{for(const o of [p.background,...(p.layers||[])])for(const k of ['colorFinish','color2Finish'])if(o?.[k]!==undefined&&!F.finishes.some(([v])=>v===o[k]))throw Error('色の仕上げが不正です');return validate(p);};
+F.validate=p=>{for(const o of [p.background,...(p.layers||[])])for(const k of ['colorFinish','color2Finish','borderColorFinish'])if(o?.[k]!==undefined&&!F.finishes.some(([v])=>v===o[k]))throw Error('色の仕上げが不正です');return validate(p);};
 })();
