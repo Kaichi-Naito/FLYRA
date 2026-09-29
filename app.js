@@ -284,7 +284,7 @@ function openPalette(){
  const base=snapshot(),colors=F.projectColors(base),list=$('paletteColors');list.replaceChildren();
  colors.forEach((color,i)=>{const label=document.createElement('label');label.className='palette-color';const swatch=document.createElement('span');swatch.className='palette-original';swatch.style.background=color;const name=document.createElement('span');name.textContent=(color===base.background.color.toLowerCase()?'背景 / ':'')+'色 '+(i+1);const input=document.createElement('input');input.type='color';input.value=color;input.dataset.original=color;input.setAttribute('aria-label',name.textContent);label.append(swatch,name,input);list.append(label);});
  $('paletteLocked').checked=true;
- const replacements=()=>Object.fromEntries([...list.querySelectorAll('input')].map(el=>[el.dataset.original,el.value]));
+ const replacements=()=>Object.fromEntries([...list.querySelectorAll('input[type=color]')].map(el=>[el.dataset.original,el.value]));
  const preview=()=>{previewProject=F.clone(base);F.replaceProjectColors(previewProject,replacements(),$('paletteLocked').checked);draw();};
  list.oninput=preview;$('paletteLocked').onchange=preview;
  $('applyPalette').onclick=()=>{const values=replacements(),locked=$('paletteLocked').checked;previewProject=null;$('paletteDialog').close();commit(()=>F.replaceProjectColors(project,values,locked));};

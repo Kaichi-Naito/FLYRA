@@ -43,3 +43,4 @@
 
 /* Keep marquee gestures from selecting browser text outside the artboard. */
 #canvasArea{touch-action:none;user-select:none}#properties [data-bulk]::placeholder{color:#8a9183}
+.color-entry{display:grid;grid-template-columns:minmax(0,1fr);gap:5px;min-width:0;margin-top:6px}.color-entry input{margin:0;width:100%}.color-entry .color-code{font-family:ui-monospace,Consolas,monospace;letter-spacing:.02em}.color-code[aria-invalid=true]{border-color:#bd4838}.color-code-error{color:#bd4838;font-size:10px;line-height:1.5}.color-code-error[hidden]{display:none}.palette-color{flex-wrap:wrap}.palette-color .color-entry{flex-basis:100%}.palette-color .color-entry input[type=color]{width:100%;margin:0}
