@@ -51,6 +51,6 @@ F.readLocalFontNames=async face=>{
  const japanese=names.filter(n=>n.japanese),full=japanese.find(n=>n.id===4)?.value;
  const family=japanese.find(n=>n.id===16)?.value||japanese.find(n=>n.id===1)?.value;
  const style=japanese.find(n=>n.id===17)?.value||japanese.find(n=>n.id===2)?.value||face.style;
- return {label:full||(family?[family,style].filter(Boolean).join(' '):''),aliases:[...new Set(names.map(n=>n.value))],fullNames:[...new Set(names.filter(n=>n.id===4||n.id===6).map(n=>n.value))]};
+ return {label:full||(family?[family,style].filter(Boolean).join(' '):''),aliases:[...new Set(names.map(n=>n.value))],families:[...new Set(names.filter(n=>n.id===1||n.id===16).map(n=>n.value))],fullNames:[...new Set(names.filter(n=>n.id===4||n.id===6).map(n=>n.value))]};
 };
 })();
