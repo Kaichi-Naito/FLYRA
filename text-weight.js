@@ -34,11 +34,56 @@ function paintExportMask(ctx,text,x,y,amount,rect){
 function drawMask(mask,ctx,text,x,y,amount,left,top,w,h){
  mask.font=ctx.font;mask.textAlign=ctx.textAlign;mask.textBaseline=ctx.textBaseline;mask.direction=ctx.direction;
  for(const key of ['fontKerning','fontStretch','fontVariantCaps','letterSpacing','wordSpacing'])if(key in ctx)mask[key]=ctx[key];
- mask.fillStyle=mask.strokeStyle='#000';mask.lineJoin='round';mask.lineWidth=Math.abs(amount);
+ mask.fillStyle=ctx.fillStyle;
  mask.fillText(text,x,y);
- if(amount<0)mask.globalCompositeOperation='destination-out';
- mask.strokeText(text,x,y);
+ adjustInk(mask,amount);
  mask.globalCompositeOperation='source-in';mask.fillStyle=ctx.fillStyle;mask.fillRect(left,top,w,h);
+}
+function adjustInk(ctx,amount){
+ // strokeText can synthesize bold independently of lineWidth. Erasing that
+ // stroke destroys small dot glyphs even for a 700 -> 699 adjustment. Start
+ // from the actual filled glyph and expand/erode its alpha instead. Fractional
+ // radii interpolate adjacent filters, including the unchanged zero radius.
+ const {width:w,height:h}=ctx.canvas,t=ctx.getTransform(),radius=Math.abs(amount)/2;
+ const rx=radius*Math.hypot(t.a,t.c),ry=radius*Math.hypot(t.b,t.d);
+ if(Math.max(rx,ry)<1e-8)return;
+ const image=ctx.getImageData(0,0,w,h),data=image.data,size=w*h;
+ // Keep fractional coverage through every directional pass. Round to 8-bit
+ // alpha only once, so a one-unit slider change is not lost at each pass.
+ let source=new Uint16Array(size),target=new Uint16Array(size);
+ for(let i=0;i<size;i++)source[i]=data[i*4+3]*256;
+ const queue=new Int32Array(Math.max(w,h)),grow=amount>0;
+ const pass=(r,lines)=>{
+  if(r<1e-8)return;
+  const whole=Math.floor(r),fraction=r-whole;
+  const filter=(n,mix)=>{
+   for(const [start,step,length] of lines){
+    let head=0,tail=0,next=0;
+    for(let i=0;i<length;i++){
+     const end=Math.min(length-1,i+n);
+     while(next<=end){const v=source[start+next*step];while(tail>head&&(grow?source[start+queue[tail-1]*step]<=v:source[start+queue[tail-1]*step]>=v))tail--;queue[tail++]=next++;}
+     while(head<tail&&queue[head]<i-n)head++;
+     const at=start+i*step,v=!grow&&(i<n||i+n>=length)?0:source[start+queue[head]*step];
+     target[at]=mix?Math.round(target[at]*(1-mix)+v*mix):v;
+    }
+   }
+  };
+  filter(whole,0);if(fraction>1e-8)filter(whole+1,fraction);
+  [source,target]=[target,source];
+ };
+ // Four separable directions approximate a round outline without a quadratic
+ // kernel cost. The window algorithm stays linear even for very large text.
+ const diagonal=Math.min(rx,ry)*(1-1/Math.sqrt(2));
+ pass(rx-2*diagonal,Array.from({length:h},(_,y)=>[y*w,1,w]));
+ pass(ry-2*diagonal,Array.from({length:w},(_,x)=>[x,w,h]));
+ if(diagonal>1e-8){
+  const down=[],up=[];
+  for(let x=0;x<w;x++){down.push([x,w+1,Math.min(w-x,h)]);up.push([x,w-1,Math.min(x+1,h)]);}
+  for(let y=1;y<h;y++){down.push([y*w,w+1,Math.min(w,h-y)]);up.push([y*w+w-1,w-1,Math.min(w,h-y)]);}
+  pass(diagonal,down);pass(diagonal,up);
+ }
+ for(let i=0;i<size;i++)data[i*4+3]=Math.round(source[i]/256);
+ ctx.putImageData(image,0,0);
 }
 function paintAdjusted(ctx,text,x,y,amount){
  // Thinning must not erase the flyer behind the text. Composite the finished
