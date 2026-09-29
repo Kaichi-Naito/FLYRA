@@ -13,6 +13,13 @@ F.setTextWeight=(o,value)=>{
  o.fontWeight=next;
 };
 F.nativeTextWeight=o=>native(o.fontWeightAnchor??o.fontWeight);
+// Local aliases register one exact face as normal (400), even when its name
+// contains Bold. Requesting 700 would synthesize additional bold on that face.
+F.resetTextWeight=o=>{
+ if(o.type!=='text')return;
+ o.fontWeight=String(o.font).startsWith('local:')?400:(F.closestWeight?F.closestWeight(o.font,400):400);
+ delete o.fontWeightAnchor;
+};
 let surface;
 function paintExportMask(ctx,text,x,y,amount,rect){
  // Rasterize directly in output pixels, including text zoom and rotation.
