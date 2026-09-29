@@ -26,8 +26,6 @@ F.fontWeights=id=>F.fontCatalog.find(f=>f.id===id)?.weights||[400,700,900];
 F.closestWeight=(id,weight)=>F.fontWeights(id).reduce((a,b)=>Math.abs(a-weight)<=Math.abs(b-weight)?a:b);
 const sheets=new Map(),loads=new Map();
 function stylesheet(f){if(sheets.has(f.id))return sheets.get(f.id);const p=new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='https://fonts.googleapis.com/css2?family='+f.family.replaceAll(' ','+')+':wght@'+f.weights.join(';')+'&display=swap';const timer=setTimeout(()=>{link.remove();reject(Error('書体の読み込みがタイムアウトしました'));},15000);link.onload=()=>{clearTimeout(timer);resolve();};link.onerror=()=>{clearTimeout(timer);link.remove();reject(Error('オンライン書体を読み込めませんでした'));};document.head.append(link);});sheets.set(f.id,p);p.catch(()=>sheets.delete(f.id));return p;}
-F.ensureFont=async o=>{const f=F.fontCatalog.find(f=>f.id===o.font);if(!f?.family)return;const weight=F.closestWeight(o.font,o.fontWeight),sample='Aa'+(o.text||'あ');const key=f.id+'|'+weight+'|'+sample;if(loads.has(key))return loads.get(key);const p=(async()=>{await stylesheet(f);const loaded=await document.fonts.load(`${weight} 32px "${f.family}"`,sample);if(!loaded.length)throw Error('書体を読み込めませんでした');})();loads.set(key,p);p.catch(()=>loads.delete(key));return p;};
+F.ensureFont=async o=>{const f=F.fontCatalog.find(f=>f.id===o.font);if(!f?.family)return;const weight=F.closestWeight(o.font,F.nativeTextWeight?F.nativeTextWeight(o):o.fontWeight),sample='Aa'+(o.text||'あ');const key=f.id+'|'+weight+'|'+sample;if(loads.has(key))return loads.get(key);const p=(async()=>{await stylesheet(f);const loaded=await document.fonts.load(`${weight} 32px "${f.family}"`,sample);if(!loaded.length)throw Error('書体を読み込めませんでした');})();loads.set(key,p);p.catch(()=>loads.delete(key));return p;};
 F.ensureProjectFonts=p=>Promise.all(p.layers.filter(o=>o.type==='text'&&o.visible).map(o=>F.ensureFont(o)));
 })();
-
-
