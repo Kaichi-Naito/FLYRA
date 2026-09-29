@@ -76,7 +76,7 @@ F.makeProject=(id='afterhours',content=F.defaultContent,width=1080,height=1350,s
   raw('GOOD MUSIC. GOOD PEOPLE.',60,50,880,35,21,{align:'center'});text('title',45,160,910,330,164,{font:'heavy',align:'center',lineHeight:.9});text('subtitle',90,650,820,65,27,{align:'center'});text('date',60,928,880,54,38,{align:'center'});text('venue',60,1006,880, forty(),24,{align:'center'});line(1064);text('details',60,1100,880,70,24,{align:'center',lineHeight:1.4});text('price',60,1190,880,30,18,{align:'center'});
  }
  const sx=width/1000,sy=height/1250;
- for(const o of layers){o.x*=sx;o.y*=sy;o.w*=sx;o.h*=sy;if(o.fontSize)o.fontSize*=Math.min(sx,sy);}
+ for(const o of layers){o.x*=sx;o.y*=sy;o.w*=sx;o.h*=sy;for(const key of ['fontSize','cornerRadius','borderWidth','shadowDistance','shadowBlur'])if(o[key]!==undefined)o[key]*=Math.min(sx,sy);}
  return {format:'flyra',version:1,name:'はじめてのフライヤー',width,height,template:id,seed,palette:p.slice(),content:F.clone(content),background:bg,layers};
 };
 function seventy(){return 70;}function forty(){return 40;}
@@ -161,7 +161,7 @@ F.render=(canvas,p,{images=new Map(),transparent=false,onlyLayer=null,viewport=n
 };
 F.localPoint=(o,x,y)=>{const a=-o.rotation*Math.PI/180,dx=x-o.x-o.w/2,dy=y-o.y-o.h/2;return {x:dx*Math.cos(a)-dy*Math.sin(a)+o.w/2,y:dx*Math.sin(a)+dy*Math.cos(a)+o.h/2};};
 F.hit=(o,x,y)=>{const p=F.localPoint(o,x,y);return o.visible&&!o.locked&&p.x>=0&&p.x<=o.w&&p.y>=0&&p.y<=o.h;};
-F.resizeProject=(p,w,h)=>{const sx=w/p.width,sy=h/p.height;for(const o of p.layers){o.x*=sx;o.y*=sy;o.w*=sx;o.h*=sy;if(o.fontSize)o.fontSize*=Math.min(sx,sy);}p.width=w;p.height=h;};
+F.resizeProject=(p,w,h)=>{const sx=w/p.width,sy=h/p.height;for(const o of p.layers){o.x*=sx;o.y*=sy;o.w*=sx;o.h*=sy;for(const key of ['fontSize','cornerRadius','borderWidth','shadowDistance','shadowBlur'])if(o[key]!==undefined)o[key]*=Math.min(sx,sy);}p.width=w;p.height=h;};
 F.applyTemplate=(p,id,seed)=>{
  const next=F.makeProject(id,p.content,p.width,p.height,seed);next.name=p.name;
  const photos=p.layers.filter(o=>o.slot&&o.type==='image'&&!o.locked),slots=next.layers.filter(o=>o.slot&&!o.locked),used=new Set(),filled=new Set();

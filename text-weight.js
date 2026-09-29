@@ -21,6 +21,11 @@ F.resetTextWeight=o=>{
  delete o.fontWeightAnchor;
 };
 let surface;
+const glyphCache=new Map();let glyphPixels=0,fontEpoch=0;
+const clearGlyphs=()=>{glyphCache.clear();glyphPixels=0;fontEpoch++;};
+document.fonts?.addEventListener('loadingdone',clearGlyphs);
+document.fonts?.addEventListener('loadingerror',clearGlyphs);
+F.previewGlyphStats={hits:0,misses:0};
 function paintExportMask(ctx,text,x,y,amount,rect){
  // Rasterize directly in output pixels, including text zoom and rotation.
  // Bound the temporary bitmap to visible output (plus shadow reach), so very
@@ -102,10 +107,19 @@ function paintAdjusted(ctx,text,x,y,amount){
  if(!F.previewMode){paintExportMask(ctx,text,x,y,amount,{left,top,w,h});return;}
  const t=ctx.getTransform();
  const scale=Math.min(Math.max(1,Math.hypot(t.a,t.b),Math.hypot(t.c,t.d)),4,4096/w,4096/h,Math.sqrt(4000000/(w*h)));
+ const key=typeof ctx.fillStyle==='string'&&document.fonts?.status!=='loading'?JSON.stringify([fontEpoch,document.fonts?.size,ctx.font,ctx.textAlign,ctx.textBaseline,ctx.direction,ctx.fontKerning,ctx.fontStretch,ctx.fontVariantCaps,ctx.letterSpacing,ctx.wordSpacing,ctx.fillStyle,text,x,y,amount,left,top,w,h,scale]):null;
+ const cached=key&&glyphCache.get(key);
+ if(cached){F.previewGlyphStats.hits++;glyphCache.delete(key);glyphCache.set(key,cached);ctx.drawImage(cached,0,0,w*scale,h*scale,left,top,w,h);return;}
+ F.previewGlyphStats.misses++;
  surface.width=Math.max(1,Math.ceil(w*scale));surface.height=Math.max(1,Math.ceil(h*scale));
  const mask=surface.getContext('2d');mask.scale(scale,scale);mask.translate(-left,-top);
  drawMask(mask,ctx,text,x,y,amount,left,top,w,h);
  ctx.drawImage(surface,0,0,w*scale,h*scale,left,top,w,h);
+ if(key){
+  const size=surface.width*surface.height;
+  while(glyphCache.size&&(glyphCache.size>=128||glyphPixels+size>12000000)){const first=glyphCache.keys().next().value,old=glyphCache.get(first);glyphPixels-=old.width*old.height;glyphCache.delete(first);}
+  glyphCache.set(key,surface);glyphPixels+=size;surface=null;
+ }
 }
 F.paintText=(ctx,o,text,x,y)=>{
  const size=Number(/([\d.]+)px/.exec(ctx.font)?.[1])||o.fontSize||40;
