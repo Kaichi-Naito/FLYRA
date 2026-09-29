@@ -3,7 +3,7 @@
 'use strict';
 const F=window.Flyra,ensure=F.ensureFont,validate=F.validate,entries=new Map(),loads=new Map(),sources=new Map();
 const prefix='local:',quote=s=>'"'+s.replace(/["\\\n\r\f]/g,c=>'\\'+c.codePointAt(0).toString(16)+' ')+'"';
-let lastScan=null;
+let lastScan=null,restoreScan=null;
 const valid=names=>Array.isArray(names)&&names.length===4&&names.every(s=>typeof s==='string'&&s.length>0&&s.length<=300&&!/[\u0000-\u001f\u007f]/.test(s));
 function register(names){
  if(!valid(names))throw Error('PCの書体情報が不正です');
@@ -55,12 +55,20 @@ F.importLocalFonts=async(onProgress)=>{
  if(!found.size)throw Error('利用できるフォントが見つかりません。Creative Cloudでフォントをインストールしてから、もう一度お試しください。');
  return found.size;
 };
-F.addLocalFontByName=async name=>{
+F.addLocalFontByName=async(name,onProgress)=>{
  name=String(name).replace(/[\u200b-\u200d\ufeff]/g,'').trim();if(!valid([name,name,name,'Regular']))throw Error('書体の正式な名前を入力してください（300文字以内）。');
  const report={requested:name,probes:[]};F.localFontLastCheck=report;
+ // Query while the button's user activation is still available. Permission alone
+ // does not populate sources, and CSS local() can fail even for enumerated fonts.
+ if(F.localFontsSupported()){
+  try{await F.importLocalFonts(onProgress);report.enumeration='取得済み';}
+  catch(error){report.enumeration=error.message;}
+ }else report.enumeration='このブラウザはフォント一覧の取得に対応していません';
  const normalize=F.normalizeFontSearch||((s)=>s.normalize('NFKC').toLowerCase().replace(/[\s-]+/g,'')),key=normalize(name);
- const existing=[...entries.values()].find(f=>f.fullNames.some(n=>normalize(n)===key));
- if(existing){if(loads.get(existing.id)?.failed)loads.delete(existing.id);await F.ensureFont({font:existing.id});return existing;}
+ const candidates=[...entries.values()].sort((a,b)=>Number(sources.has(b.id))-Number(sources.has(a.id)));
+ const existing=candidates.find(f=>f.fullNames.some(n=>normalize(n)===key));
+ const use=async f=>{report.match=f.fullName;try{if(loads.get(f.id)?.failed)loads.delete(f.id);await F.ensureFont({font:f.id});report.result=f.loadMethod||'読み込み済み';return f;}catch(error){report.result=error.message;throw error;}};
+ if(existing)return use(existing);
  const probe=async(candidate,style='Regular')=>{try{const face=new FontFace('FLYRA_Local_Probe','local('+quote(candidate)+')');await face.load();report.probes.push({name:candidate,loaded:true});return {face,name:candidate,style};}catch(error){report.probes.push({name:candidate,loaded:false,error:error.name});return null;}};
  const save=result=>{
   const f=register([result.name,result.name,name,result.style]);result.face.family=f.alias;document.fonts.add(result.face);f.available=true;
@@ -69,10 +77,10 @@ F.addLocalFontByName=async name=>{
  // local() accepts full/PostScript names, not necessarily the displayed family name.
  // Check the exact name first, then resolve its family without silently picking a weight.
  const exact=await probe(name)||await probe(name.normalize('NFKC').replace(/\s+/g,' '));if(exact)return save(exact);
- const family=[...entries.values()].filter(f=>f.familyNames.some(n=>normalize(n)===key));
+ const family=candidates.filter(f=>f.familyNames.some(n=>normalize(n)===key)).filter((f,i,all)=>all.findIndex(other=>normalize(other.fullName)===normalize(f.fullName))===i);
  const chooseMessage=names=>'「'+name+'」には複数の太さがあります。次の名前から選んで入力してください：'+names.join(' / ');
  if(family.length>1)throw Error(chooseMessage(family.map(f=>f.fullName)));
- if(family.length===1){const f=family[0];if(loads.get(f.id)?.failed)loads.delete(f.id);await F.ensureFont({font:f.id});return f;}
+ if(family.length===1)return use(family[0]);
  const found=[],bases=[...new Set([name,name.normalize('NFKC').replace(/\s+/g,' ')])];
  // Adobe/Japanese fonts commonly append these style names. Each candidate must
  // actually load; failed probes never become catalog entries or project fonts.
@@ -86,9 +94,26 @@ F.addLocalFontByName=async name=>{
 F.localFontDiagnosticText=async()=>{
  let permission='確認できません';try{permission=(await navigator.permissions.query({name:'local-fonts'})).state;}catch{}
  const check=F.localFontLastCheck,lines=['ブラウザ: '+navigator.userAgent,'ローカルフォントAPI: '+(F.localFontsSupported()?'対応':'非対応'),'フォント権限: '+permission,lastScan?'一覧: ブラウザ取得 '+lastScan.received+' / FLYRA登録 '+lastScan.registered:'一覧: このページでは未取得'];
- if(check){lines.push('入力名: '+check.requested);for(const p of check.probes)lines.push((p.loaded?'成功: ':'失敗: ')+p.name+(p.error?' ('+p.error+')':''));}
+ if(check){lines.push('入力名: '+check.requested);if(check.enumeration)lines.push('一覧取得結果: '+check.enumeration);lines.push('一致した書体: '+(check.match||'なし'));if(check.result)lines.push('読み込み結果: '+check.result);for(const p of check.probes)lines.push((p.loaded?'成功: ':'失敗: ')+p.name+(p.error?' ('+p.error+')':''));}
  return lines.join('\n');
 };
+async function restoreGrantedSources(){
+ if(!F.localFontsSupported())return;
+ if(!restoreScan)restoreScan=(async()=>{
+  // Restoring a project must not open an unsolicited permission dialog.
+  const status=await navigator.permissions.query({name:'local-fonts'});
+  if(status.state==='granted')await F.importLocalFonts();
+ })().catch(()=>{});
+ await restoreScan;
+}
+function sourceFor(f){
+ if(sources.has(f.id))return sources.get(f.id);
+ // Older projects can contain names entered manually rather than API metadata.
+ const key=s=>s.normalize('NFKC').toLowerCase().replace(/[\s-]+/g,'');
+ const names=new Set(f.fullNames.map(key));
+ for(const [id,source] of sources){if(entries.get(id).fullNames.some(n=>names.has(key(n))))return source;}
+ return null;
+}
 F.ensureFont=async o=>{
  const f=F.localFontInfo(o.font);if(!f)return ensure(o);
  if(loads.has(f.id))return loads.get(f.id).promise;
@@ -96,15 +121,16 @@ F.ensureFont=async o=>{
  record.promise=(async()=>{
   let face;try{
    try{
-    face=new FontFace(f.alias,f.fullNames.map(name=>'local('+quote(name)+')').join(', '));await face.load();
+    face=new FontFace(f.alias,f.fullNames.map(name=>'local('+quote(name)+')').join(', '));await face.load();f.loadMethod='名前から読み込み';
    }catch(error){
     // Some installed faces enumerate correctly but local() cannot resolve their names.
     // Use the permission-granted font in memory; never serialize or upload its bytes.
-    const source=sources.get(f.id);if(!source)throw error;
-    const blob=await source.blob();face=new FontFace(f.alias,await blob.arrayBuffer());await face.load();
+    if(!sourceFor(f)&&!lastScan)await restoreGrantedSources();
+    const source=sourceFor(f);if(!source)throw error;
+    const blob=await source.blob();face=new FontFace(f.alias,await blob.arrayBuffer());await face.load();f.loadMethod='許可済みのフォントデータから読み込み';
    }
    document.fonts.add(face);f.available=true;
-  }catch{record.failed=true;f.available=false;if(face)document.fonts.delete(face);throw Error('「'+f.fullName+'」がこのPCで使えません。フォントをインストールし、「このPCのフォントを使う」で再読み込みしてください。');}
+  }catch(error){record.failed=true;f.available=false;if(face)document.fonts.delete(face);throw Error(sourceFor(f)?'「'+f.fullName+'」は一覧にありますが、ブラウザがフォントデータを読み込めませんでした（'+error.name+'）。':'「'+f.fullName+'」がこのPCで使えません。「このPCのフォントを使う」で一覧を取得してから、もう一度お試しください。');}
  })();loads.set(f.id,record);return record.promise;
 };
 F.ensureProjectFonts=async p=>{
