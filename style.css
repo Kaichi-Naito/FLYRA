@@ -40,3 +40,6 @@
 
 .canvas-area.is-panning,.canvas-area.is-panning *{cursor:grabbing!important;user-select:none}
 .app-version{font-size:10px;color:var(--muted);letter-spacing:.02em;white-space:nowrap;margin-left:-12px;align-self:center}.topbar .brand{flex-shrink:0}@media(max-width:600px){.app-version{font-size:9px;margin-left:-5px}}
+
+/* Keep marquee gestures from selecting browser text outside the artboard. */
+#canvasArea{touch-action:none;user-select:none}#properties [data-bulk]::placeholder{color:#8a9183}
