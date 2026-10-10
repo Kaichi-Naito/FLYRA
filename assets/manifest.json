@@ -490,5 +490,86 @@
     "blend": "source-over",
     "opacity": 1,
     "sha256": "8798e9f277e38ecafdb8fcd9eb39f0e311c031aa943613c635641ca09f4bcf01"
+  },
+  {
+    "id": "monochrome-eye",
+    "name": "モノクロ・アイ",
+    "folder": "icons",
+    "file": "icons/monochrome-eye.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "1592b35df98642d2c121cd1da635eea7f3b9cb39ae600da6cdc6ed6493676832"
+  },
+  {
+    "id": "monochrome-foot",
+    "name": "モノクロ・フット",
+    "folder": "icons",
+    "file": "icons/monochrome-foot.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "bf1e98055336d6e411c355f8ec769ea0706b8ad20bd53ae547a9e0b57aee6fb5"
+  },
+  {
+    "id": "open-palm",
+    "name": "差し出す手",
+    "folder": "icons",
+    "file": "icons/open-palm.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "b133d5534b5abee55be359b66dddb58bd2eb99e0ad58cd429029d379d39da2d3"
+  },
+  {
+    "id": "neon-spine",
+    "name": "ネオン・スパイン",
+    "folder": "icons",
+    "file": "icons/neon-spine.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "137f01a9c2e3940e30d2e9536e64119a1228cb5b3e2217f1bec3485d28cc9f8d"
+  },
+  {
+    "id": "glitch-statue",
+    "name": "グリッチ・彫像",
+    "folder": "icons",
+    "file": "icons/glitch-statue.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "2141e5a91fc51f91839a86bb2e95b8a5735cff749f366c18927ecb23276957d5"
+  },
+  {
+    "id": "yellow-orbit-star",
+    "name": "イエロー・オービットスター",
+    "folder": "icons",
+    "file": "icons/yellow-orbit-star.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "85ebccbbfe1c68867caaa579f27c5a3ea34ec7f37b6f3a7330853e612d032048"
+  },
+  {
+    "id": "yellow-chevron",
+    "name": "イエロー・シェブロン",
+    "folder": "icons",
+    "file": "icons/yellow-chevron.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "27a077bed7ddc56f8e3f7e4947d8d93cc9d604f71784d53240bad70bc45266d0"
+  },
+  {
+    "id": "yellow-tech-block",
+    "name": "イエロー・テックブロック",
+    "folder": "icons",
+    "file": "icons/yellow-tech-block.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "312c14573fd24d6399ab3d67b29666d12cdadb7011d7c9258b7f97428c32bdb2"
+  },
+  {
+    "id": "yellow-tech-divider",
+    "name": "イエロー・テックライン",
+    "folder": "icons",
+    "file": "icons/yellow-tech-divider.png",
+    "blend": "source-over",
+    "opacity": 1,
+    "sha256": "d3b5dfeabecf3044e546040eedb36283de1557f4b0b82ad935037dcacb5e3e38"
   }
 ]
